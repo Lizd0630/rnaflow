@@ -1,0 +1,9 @@
+Run	R1	R2	Layout	Strand_specificity
+example_1	example_1	example_1	PAIRED	fr-unstranded
+example_2	example_2	example_2	PAIRED	fr-firststrand
+example_3	example_3	example_3	PAIRED	fr-unstranded
+example_4	example_4	example_4	PAIRED	fr-firststrand
+example_5	example_5		SINGLE	fr-unstranded
+example_6	example_6		SINGLE	fr-firststrand
+example_7	example_7		SINGLE	fr-unstranded
+example_8	example_8		SINGLE	fr-firststrand

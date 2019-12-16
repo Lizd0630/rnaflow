@@ -1,0 +1,7 @@
+{
+    "-threads": "4",
+    "LEADING:3": "",
+    "TRAILING:3": "",
+    "SLIDINGWINDOW:4:15": "",
+    "MINLEN:25": ""
+}

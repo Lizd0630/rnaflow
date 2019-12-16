@@ -1,0 +1,10 @@
+{
+    "--qualified_quality_phred": "20",
+    "--unqualified_percent_limit": "40",
+    "--length_required": "50",
+    "--average_qual": "20",
+    "--cut_right": "",
+    "--cut_window_size": "4",
+    "--cut_right_mean_quality": "15",
+    "--thread": "2"
+}

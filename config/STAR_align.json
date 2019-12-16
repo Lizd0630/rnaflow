@@ -1,0 +1,18 @@
+{
+    "--runThreadN": "8",
+    "--outSAMtype": "BAM SortedByCoordinate",
+    "--outBAMcompression": "9",
+    "--limitBAMsortRAM": "60000000000",
+    "--readFilesCommand": "zcat",
+    "--quantMode": "TranscriptomeSAM GeneCounts",
+    "--outSJfilterOverhangMin": "12 12 12 12",
+    "--alignSJoverhangMin": "3",
+    "--alignSJDBoverhangMin": "3",
+    "--chimSegmentMin": "12",
+    "--chimScoreMin": "2",
+    "--chimScoreSeparation": "10",
+    "--chimJunctionOverhangMin": "12",
+    "--outReadsUnmapped": "Fastx",
+    "--outFilterMultimapNmax": "20",
+    "--chimOutType": "Junctions SeparateSAMold"
+}
