@@ -7,7 +7,7 @@
 
 
 from src.Meta import Meta
-from src.Config import Param, Soft
+from src.Config import ParseDict
 import pathlib as pl
 import re
 import src.MyError as me
@@ -22,26 +22,26 @@ class Align:
         self.output_dir = str(pl.Path(output_dir)) + r"/"
         self.software = tool
         self.ref = ref
-        self.soft_path = Soft(softwares).make_config()
-        self.config = Param(config).make_config()
+        self.soft_path = ParseDict(softwares).dict
+        self.config = ParseDict(config).make_config()
 
     def make_cmds(self):
         cmds = []
         allfiles = [str(i) for i in pl.Path(self.input_dir).rglob(r"*")]
         for meta in self.meta_info:
             if meta["layout"] == "PAIRED":
-                pattern1 = re.compile(self.input_dir + meta["r1"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz")
-                pattern2 = re.compile(self.input_dir + meta["r2"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[2]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz")
+                pattern1 = re.compile(self.input_dir + meta["r1"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz" + r"$")
+                pattern2 = re.compile(self.input_dir + meta["r2"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[2]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz" + r"$")
                 R1 = list(filter(lambda x: pattern1.match(x) is not None, allfiles))
                 if len(R1) == 1:
                     R1 = R1[0]
                 else:
-                    raise me.CntError("fastq file error.")
+                    raise me.CntError(f"fastq file number error: {meta['r1']}")
                 R2 = list(filter(lambda x: pattern2.match(x) is not None, allfiles))
                 if len(R2) == 1:
                     R2 = R2[0]
                 else:
-                    raise me.CntError("fastq file error.")
+                    raise me.CntError(f"fastq file number error: {meta['r2']}")
                 if self.software == "STAR":
                     cmd = f"{self.soft_path['STAR']} \
                             --genomeDir {self.ref} {self.config} \
@@ -56,12 +56,12 @@ class Align:
                 else:
                     pass
             elif meta["layout"] == "SINGLE":
-                pattern1 = re.compile(self.input_dir + meta["r1"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz")
+                pattern1 = re.compile(self.input_dir + meta["r1"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz" + r"$")
                 R1 = list(filter(lambda x: pattern1.match(x) is not None, allfiles))
                 if len(R1) == 1:
                     R1 = R1[0]
                 else:
-                    raise me.CntError("fastq file error.")
+                    raise me.CntError(f"fastq file number error: {meta['r1']}")
                 if self.software == "STAR":
                     cmd = f"{self.soft_path['STAR']} \
                             --genomeDir {self.ref} {self.config} \

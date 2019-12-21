@@ -7,7 +7,7 @@
 
 
 from src.Meta import Meta
-from src.Config import Param, Soft
+from src.Config import ParseDict
 from src.Config import RSEM_STRAND
 import pathlib as pl
 import re
@@ -22,8 +22,8 @@ class Quant:
         self.input_dir = str(pl.Path(input_dir)) + r"/"
         self.output_dir = str(pl.Path(output_dir)) + r"/"
         self.software = tool
-        self.soft_path = Soft(softwares).make_config()
-        self.config = Param(config).make_config()
+        self.soft_path = ParseDict(softwares).dict
+        self.config = ParseDict(config).make_config()
         self.suffix = suffix
         self.ref = ref
 
@@ -37,7 +37,7 @@ class Quant:
                 if len(inbam) == 1:
                     inbam = inbam[0]
                 else:
-                    raise me.CntError(f"Bam file number error: {len(inbam)}.")
+                    raise me.CntError(f"Bam file number error: {meta['run']}")
                 if self.software == "RSEM":
                     cmd = f"{self.soft_path['RSEM']} \
                             --paired-end \
@@ -56,7 +56,7 @@ class Quant:
                 if len(inbam) == 1:
                     inbam = inbam[0]
                 else:
-                    raise me.CntError(f"Bam file number error: {len(inbam)}.")
+                    raise me.CntError(f"Bam file number error: {meta['run']}")
                 if self.software == "RSEM":
                     cmd = f"{self.soft_path['RSEM']} \
                             --strandedness {RSEM_STRAND[meta['strand']]} \

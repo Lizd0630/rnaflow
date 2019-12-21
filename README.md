@@ -33,6 +33,6 @@ pandas, click
 
 
 ## To Do
-1. bam QC, raw counts, remove duplicates and multi-mapped reads
+1. bam QC(rnaMetrics summary), remove duplicates and multi-mapped reads
 2. Check commands finished in order not do it again.
-3. Error
+3. Error: parameter with suffix file exist?

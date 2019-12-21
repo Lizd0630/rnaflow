@@ -21,11 +21,20 @@ def run_sys(func, silent=True):
     p.wait()
     t2 = time.asctime(time.localtime(time.time()))
     print(f"{t2} finished:\n    {func}\n")
+    stderr = p.stderr.read().decode("utf-8")
+    if len(stderr) > 0:
+        print(f"Errors:\n{stderr}\n")
+    else:
+        pass
     if silent:
         pass
     else:
         print("Logs:\n")
-        print(p.stdout.read().decode("utf-8"))
+        stdout = p.stdout.read().decode("utf-8")
+        if len(stdout) > 0:
+            print(stdout)
+        else:
+            print("null")
 
 
 class RunCmds:

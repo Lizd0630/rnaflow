@@ -16,7 +16,10 @@ from src.RunCmds import RunCmds
 import src.Config as Config
 from src.Trim import Trim
 from src.Align import Align
+from src.BamQC import BamQC
 from src.Quant import Quant
+from src.Counts import Counts
+from src.Results import Results
 
 
 # ----------------------------------FastQC------------------------------------ #
@@ -42,19 +45,21 @@ from src.Quant import Quant
     "-m",
     "--meta_file",
     required=True,
-    type=click.File("r"),
+    type=click.Path(exists=True),
     help="Path to meta information of samples."
 )
 @click.option(
     "-n",
     "--n_jobs",
     default=1,
+    show_default=True,
     type=click.IntRange(1, 12, clamp=True),
     help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
 )
 @click.option(
     "--softwares",
     default=Config.SOFTWARES,
+    show_default=True,
     type=str,
     help="Path to JSON file which contains software path."
 )
@@ -67,17 +72,19 @@ from src.Quant import Quant
 @click.option(
     "--config",
     default=Config.FASTQC_CONFIG,
+    show_default=True,
     type=click.Path(exists=True),
     help="Path to JSON file(parameters)."
 )
 @click.option(
     "--silent",
     default=True,
+    show_default=True,
     type=bool,
     help="Whether suppress information in process."
 )
 @click.version_option(Config.VERSION, message='%(version)s')
-def qc(
+def fastqc(
         input_dir,
         output_dir,
         meta_file,
@@ -88,14 +95,13 @@ def qc(
         silent
 ):
     u"""
-    Performing fastqc of files in meta information.
+    Perform fastqc of files in meta information.
     """
-    soft = Config.Soft(softwares).make_config()
     cmds_fastqc = FastQC(meta_file=meta_file,
                          input_dir=input_dir,
                          output_dir=output_dir,
                          config=config,
-                         soft_path=soft['fastqc']).make_cmds()
+                         softwares=softwares).make_cmds()
     cmds_multiqc = MultiQC(input_dir=output_dir,
                            output_dir=output_dir,
                            output_name=project_name).make_cmds()
@@ -120,20 +126,21 @@ def qc(
     "-o",
     "--output_dir",
     required=True,
-    type=click.Path(),
+    type=click.Path(exists=True),
     help="Path to directory of output files."
 )
 @click.option(
     "-m",
     "--meta_file",
     required=True,
-    type=click.File("r"),
+    type=click.Path(exists=True),
     help="Path to meta information of samples."
 )
 @click.option(
     "-n",
     "--n_jobs",
     default=1,
+    show_default=True,
     type=click.IntRange(1, 12, clamp=True),
     help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
 )
@@ -141,12 +148,15 @@ def qc(
     "-t",
     "--tool",
     required=True,
+    default="fastp",
+    show_default=True,
     type=click.Choice(["Trimmomatic", "fastp"]),
     help="Software to use.",
 )
 @click.option(
     "--softwares",
     default=Config.SOFTWARES,
+    show_default=True,
     type=click.Path(exists=True),
     help="Path to json file of softwares."
 )
@@ -164,6 +174,7 @@ def qc(
 @click.option(
     "--silent",
     default=True,
+    show_default=True,
     type=bool,
     help="Whether suppress information in process."
 )
@@ -180,7 +191,9 @@ def trim(
         silent
 ):
     u"""
-    Performing triming to all input files.
+    Perform triming to all files in meta file through specific tools: \n
+        fastp \n
+        Trimmomatic \n
     """
     if config:
         pass
@@ -222,20 +235,21 @@ def trim(
     "-o",
     "--output_dir",
     required=True,
-    type=click.Path(),
+    type=click.Path(exists=True),
     help="Path to directory of output files."
 )
 @click.option(
     "-m",
     "--meta_file",
     required=True,
-    type=click.File("r"),
+    type=click.Path(exists=True),
     help="Path to meta information of samples."
 )
 @click.option(
     "-n",
     "--n_jobs",
     default=1,
+    show_default=True,
     type=click.IntRange(1, 12, clamp=True),
     help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
 )
@@ -244,6 +258,7 @@ def trim(
     "--tool",
     required=True,
     default="STAR",
+    show_default=True,
     type=click.Choice(["STAR", "GMAP", "GSNAP"]),
     help="Software to use.",
 )
@@ -256,6 +271,7 @@ def trim(
 @click.option(
     "--softwares",
     default=Config.SOFTWARES,
+    show_default=True,
     type=click.Path(exists=True),
     help="Path to json file of softwares."
 )
@@ -263,7 +279,7 @@ def trim(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of MultiQC if use fastp."
+    help="Out prefix of MultiQC."
 )
 @click.option(
     "--config",
@@ -273,6 +289,7 @@ def trim(
 @click.option(
     "--silent",
     default=True,
+    show_default=True,
     type=bool,
     help="Whether suppress information in process."
 )
@@ -290,7 +307,9 @@ def align(
         silent
 ):
     u"""
-    Performing triming to all input files.
+    Perform alignments to all sample in meta file through specific tools: \n
+        STAR \n
+        GMAP \n
     """
     if config:
         pass
@@ -314,10 +333,140 @@ def align(
 # ----------------------------------Align------------------------------------- #
 
 
+# ----------------------------------bam QC------------------------------------ #
+@click.command(
+    context_settings=Config.CONTEXT_SETTINGS,
+    short_help="Perform bam QC."
+)
+@click.option(
+    "-i",
+    "--input_dir",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to directory of input fastq files."
+)
+@click.option(
+    "-o",
+    "--output_dir",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to directory of output files."
+)
+@click.option(
+    "-m",
+    "--meta_file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to meta information of samples."
+)
+@click.option(
+    "-n",
+    "--n_jobs",
+    default=1,
+    show_default=True,
+    type=click.IntRange(1, 12, clamp=True),
+    help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
+)
+@click.option(
+    "--suffix",
+    type=str,
+    default="Aligned.sortedByCoord.out.bam",
+    show_default=True,
+    help="Suffix of bam files, default is STAR's."
+)
+@click.option(
+    "--bed12",
+    type=click.Path(exists=True),
+    required=True,
+    help="Reference, for RSeQC is bed12 file: infer_experiment, genebody_coverage."
+)
+@click.option(
+    "--refflat",
+    type=click.Path(exists=True),
+    required=True,
+    help="Reference, for picard is refFlat: CollectRnaSeqMetrics."
+)
+@click.option(
+    "--softwares",
+    default=Config.SOFTWARES,
+    show_default=True,
+    type=click.Path(exists=True),
+    help="Path to json file of softwares."
+)
+@click.option(
+    "--project_name",
+    required=True,
+    type=str,
+    help="Out prefix of merged output file."
+)
+@click.option(
+    "--config",
+    default=Config.BAMQC_CONFIG,
+    show_default=True,
+    type=click.Path(exists=True),
+    help="Path to config file(parameters)."
+)
+@click.option(
+    "--silent",
+    default=True,
+    show_default=True,
+    type=bool,
+    help="Whether suppress information in process."
+)
+@click.version_option(Config.VERSION, message="%(version)s")
+def bamqc(
+        input_dir,
+        output_dir,
+        meta_file,
+        n_jobs,
+        suffix,
+        bed12,
+        refflat,
+        softwares,
+        project_name,
+        config,
+        silent
+):
+    u"""
+    Perform bam QC: \n
+        Picard(CollectRnaSeqMetrics) \n
+        RSeQC(infer_experiment, genebody_coverage)
+    """
+    config = Config.BAMQC_CONFIG
+    cmds_infer = BamQC(meta_file=meta_file,
+                       input_dir=input_dir,
+                       output_dir=output_dir,
+                       bed12=bed12,
+                       refFlat=refflat,
+                       softwares=softwares,
+                       config=config,
+                       suffix=suffix).infer_expr()
+    RunCmds(cmds=cmds_infer, silent=silent).running(n_jobs)
+    cmds_rnametrics = BamQC(meta_file=meta_file,
+                            input_dir=input_dir,
+                            output_dir=output_dir,
+                            bed12=bed12,
+                            refFlat=refflat,
+                            softwares=softwares,
+                            config=config,
+                            suffix=suffix).rnametrics()
+    RunCmds(cmds=cmds_rnametrics, silent=silent).running(n_jobs)
+    cmds_genebody = BamQC(meta_file=meta_file,
+                          input_dir=input_dir,
+                          output_dir=output_dir,
+                          bed12=bed12,
+                          refFlat=refflat,
+                          softwares=softwares,
+                          config=config,
+                          suffix=suffix).genebody()
+    RunCmds(cmds=cmds_genebody, silent=silent).running(n_jobs)
+# ----------------------------------bam QC------------------------------------ #
+
+
 # ----------------------------------Quant------------------------------------- #
 @click.command(
     context_settings=Config.CONTEXT_SETTINGS,
-    short_help="Perform quantification, RSEM."
+    short_help="Perform quantification."
 )
 @click.option(
     "-i",
@@ -330,7 +479,7 @@ def align(
     "-o",
     "--output_dir",
     required=True,
-    type=click.Path(),
+    type=click.Path(exists=True),
     help="Path to directory of output files."
 )
 @click.option(
@@ -344,6 +493,7 @@ def align(
     "-n",
     "--n_jobs",
     default=1,
+    show_default=True,
     type=click.IntRange(1, 12, clamp=True),
     help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
 )
@@ -352,6 +502,7 @@ def align(
     "--tool",
     required=True,
     default="RSEM",
+    show_default=True,
     type=click.Choice(["RSEM"]),
     help="Software to use.",
 )
@@ -364,6 +515,7 @@ def align(
 @click.option(
     "--softwares",
     default=Config.SOFTWARES,
+    show_default=True,
     type=click.Path(exists=True),
     help="Path to json file of softwares."
 )
@@ -371,7 +523,7 @@ def align(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of MultiQC if use fastp."
+    help="Out prefix of results if have."
 )
 @click.option(
     "--config",
@@ -382,11 +534,13 @@ def align(
     "--suffix",
     type=str,
     default="Aligned.toTranscriptome.out.bam",
+    show_default=True,
     help="Suffix of bam files, default is STAR's."
 )
 @click.option(
     "--silent",
     default=True,
+    show_default=True,
     type=bool,
     help="Whether suppress information in process."
 )
@@ -405,7 +559,8 @@ def quant(
         silent
 ):
     u"""
-    Performing triming to all input files.
+    Perform quantification of samples in meta file though specific tools: \n
+        RSEM \n
     """
     if config:
         pass
@@ -442,20 +597,21 @@ def quant(
     "-o",
     "--output_dir",
     required=True,
-    type=click.Path(),
+    type=click.Path(exists=True),
     help="Path to directory of output files."
 )
 @click.option(
     "-m",
     "--meta_file",
     required=True,
-    type=click.File("r"),
+    type=click.Path(exists=True),
     help="Path to meta information of samples."
 )
 @click.option(
     "-n",
     "--n_jobs",
     default=1,
+    show_default=True,
     type=click.IntRange(1, 12, clamp=True),
     help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
 )
@@ -463,13 +619,15 @@ def quant(
     "-t",
     "--tool",
     required=True,
-    default="GenomicAlignmets",
-    type=click.Choice(["GenomicAlignmets", "HTSeq"]),
+    default="GenomicAlignments",
+    show_default=True,
+    type=click.Choice(["GenomicAlignments", "HTSeq"]),
     help="Software to use.",
 )
 @click.option(
     "--softwares",
     default=Config.SOFTWARES,
+    show_default=True,
     type=click.Path(exists=True),
     help="Path to json file of softwares."
 )
@@ -481,49 +639,152 @@ def quant(
 )
 @click.option(
     "--config",
-    default=Config.GA_CONFIG,
     type=click.Path(exists=True),
-    help="Path to config file(parameters)."
+    help="Path to config file(parameters). Useless for GenomicAlignmets."
 )
 @click.option(
     "--suffix",
     type=str,
     default="Aligned.toTranscriptome.out.bam",
+    show_default=True,
     help="Suffix of bam files, default is STAR's."
 )
 @click.option(
-    "--index",
-    type=str,
+    "--ref",
+    type=click.Path(exists=True),
     required=True,
-    help="RSEM index."
+    help="Reference, gtf or gff."
+)
+@click.option(
+    "--ref_type",
+    required=True,
+    default="gtf",
+    show_default=True,
+    type=click.Choice(["gtf", "gff"]),
+    help="Reference format, 'gtf' or 'gff'."
 )
 @click.option(
     "--silent",
     default=True,
+    show_default=True,
     type=bool,
     help="Whether suppress information in process."
 )
 @click.version_option(Config.VERSION, message='%(version)s')
 def count(
-        input,
-        mode,
-        output,
-        config,
+        input_dir,
+        output_dir,
+        meta_file,
         n_jobs,
+        tool,
+        softwares,
+        project_name,
+        config,
+        suffix,
+        ref,
+        ref_type,
         silent
 ):
     u"""
-    Calculate gene, transcripts and exon expression value
-    \f
-    :param input:
-    :param mode:
-    :param output:
-    :param config:
-    :param n_jobs:
-    :return:
+    Perform reads counting of samples in meta file through specific tools: \n
+        GenomicAlignments \n
+        HTSeq \n
     """
-    click.echo(mode)
+    if config:
+        pass
+    else:
+        if tool == "GenomicAlignments":
+            cmds_ga = Counts(meta_file=meta_file,
+                             input_dir=input_dir,
+                             output_dir=output_dir,
+                             tool=tool,
+                             softwares=softwares,
+                             config=config,
+                             suffix=suffix,
+                             ref=ref,
+                             ref_type=ref_type,
+                             project_name=project_name,
+                             n_jobs=n_jobs).make_cmds()
+            RunCmds(cmds=cmds_ga, silent=silent).running(1)
+        else:
+            print("Not ready!")
 # ----------------------------------Count------------------------------------- #
+
+
+# ------------------------------reuslts process------------------------------- #
+@click.command(
+    context_settings=Config.CONTEXT_SETTINGS,
+    short_help="Perform results files manipulation: STAR final merge, RSEM results merge, etc."
+)
+@click.option(
+    "-i",
+    "--input_dir",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to directory of results."
+)
+@click.option(
+    "-o",
+    "--output_dir",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to directory of output files."
+)
+@click.option(
+    "-t",
+    "--tool",
+    required=True,
+    default="STAR",
+    show_default=True,
+    type=click.Choice(["STAR", "RSEM", "infer_expr", "RNAmetrics"]),
+    help="Software which results produced by.",
+)
+@click.option(
+    "--project_name",
+    required=True,
+    type=str,
+    help="Out prefix of processed files."
+)
+@click.option(
+    "--silent",
+    default=False,
+    show_default=True,
+    type=bool,
+    help="Whether suppress information in process."
+)
+@click.version_option(Config.VERSION, message='%(version)s')
+def results(
+        input_dir,
+        output_dir,
+        tool,
+        project_name,
+        silent
+):
+    u"""
+    Perform results files manipulation: STAR final merge, RSEM results merge, etc. \n
+        STAR final logs \n
+        RSEM results: TPM/FPKM/reads \n
+        RSeQC: infer_experiment \n
+        Picard: CollectRNAseqMetrics \n
+    """
+    if tool == "STAR":
+        cmds_star = Results(input_dir=input_dir,
+                            output_dir=output_dir,
+                            project_name=project_name).star()
+        RunCmds(cmds=cmds_star, silent=silent).running(1)
+    elif tool == "RSEM":
+        cmds_rsem = Results(input_dir=input_dir,
+                            output_dir=output_dir,
+                            project_name=project_name).rsem()
+        RunCmds(cmds=cmds_rsem, silent=silent).running(1)
+    elif tool == "infer_expr":
+        cmds_infer = Results(input_dir=input_dir,
+                             output_dir=output_dir,
+                             project_name=project_name).infer_expr()
+        RunCmds(cmds=cmds_infer, silent=silent).running(1)
+    else:
+        print("Not ready!")
+# ------------------------------reuslts process------------------------------- #
 
 
 @click.group(
@@ -533,17 +794,26 @@ def count(
 @click.version_option(Config.VERSION, message='%(version)s')
 def main():
     u"""
-    Welcome
-    \f
-    Created by Zhang yiming at 2018.11.14
+    Welcome to Lizdʻs RNAseq studio! Here we can perform Analysis below: \n
+        fastqc: FastQC\n
+        trim: Trimming\n
+        align: Alignments\n
+        bamqc: bam QC\n
+        quant: Quantification\n
+        count: Reads counting\n
+        results: Results summarization\n
+    \n
+                                            Li zhidan, 2019.12
     """
     pass
 
 
 if __name__ == '__main__':
-    main.add_command(qc)
+    main.add_command(fastqc)
     main.add_command(trim)
     main.add_command(align)
+    main.add_command(bamqc)
     main.add_command(quant)
     main.add_command(count)
+    main.add_command(results)
     main()

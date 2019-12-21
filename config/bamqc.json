@@ -1,0 +1,12 @@
+{
+    "infer_expr": {
+        "-s": "5000000"
+    },
+    "rnametrics": {
+        "MINIMUM_LENGTH": "500"
+    },
+    "genebody": {
+        "-l": "300",
+        "-f": "pdf"
+    }
+}
