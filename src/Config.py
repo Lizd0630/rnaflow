@@ -7,7 +7,7 @@ import pathlib as pl
 
 
 __dir__ = str(pl.Path(__file__).resolve().parents[1])
-VERSION = "0.1.0"
+VERSION = "1.0.0"
 LABEL = "RNA seq pipeline"
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 

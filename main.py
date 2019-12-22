@@ -10,6 +10,7 @@ Created by Zhang yimng at 2018.11.24
 """
 
 import click
+from src.WriteCmds import WriteCmds
 from src.FastQC import FastQC
 from src.MultiQC import MultiQC
 from src.RunCmds import RunCmds
@@ -105,6 +106,7 @@ def fastqc(
     cmds_multiqc = MultiQC(input_dir=output_dir,
                            output_dir=output_dir,
                            output_name=project_name).make_cmds()
+    WriteCmds(cmds=cmds_fastqc, project_name=project_name).dump(output_dir=output_dir, prog="fastqc")
     RunCmds(cmds=cmds_fastqc, silent=silent).running(n_jobs)
     RunCmds(cmds=cmds_multiqc, silent=silent).running(1)
 # ----------------------------------FastQC------------------------------------ #
@@ -211,6 +213,7 @@ def trim(
     cmds_multiqc = MultiQC(input_dir=output_dir,
                            output_dir=output_dir,
                            output_name=project_name).make_cmds()
+    WriteCmds(cmds=cmds_trim, project_name=project_name).dump(output_dir=output_dir, prog="trim")
     RunCmds(cmds=cmds_trim, silent=silent).running(n_jobs)
     if tool == "Trimmomatic":
         pass
@@ -326,6 +329,7 @@ def align(
             cmds_multiqc = MultiQC(input_dir=output_dir,
                                    output_dir=output_dir,
                                    output_name=project_name).make_cmds()
+            WriteCmds(cmds=cmds_align, project_name=project_name).dump(output_dir=output_dir, prog="align")
             RunCmds(cmds=cmds_align, silent=silent).running(n_jobs)
             RunCmds(cmds=cmds_multiqc, silent=silent).running(1)
         else:
@@ -441,6 +445,7 @@ def bamqc(
                        softwares=softwares,
                        config=config,
                        suffix=suffix).infer_expr()
+    WriteCmds(cmds=cmds_infer, project_name=project_name).dump(output_dir=output_dir, prog="inferExpr")
     RunCmds(cmds=cmds_infer, silent=silent).running(n_jobs)
     cmds_rnametrics = BamQC(meta_file=meta_file,
                             input_dir=input_dir,
@@ -450,6 +455,7 @@ def bamqc(
                             softwares=softwares,
                             config=config,
                             suffix=suffix).rnametrics()
+    WriteCmds(cmds=cmds_rnametrics, project_name=project_name).dump(output_dir=output_dir, prog="RNAmetrics")
     RunCmds(cmds=cmds_rnametrics, silent=silent).running(n_jobs)
     cmds_genebody = BamQC(meta_file=meta_file,
                           input_dir=input_dir,
@@ -459,6 +465,7 @@ def bamqc(
                           softwares=softwares,
                           config=config,
                           suffix=suffix).genebody()
+    WriteCmds(cmds=cmds_genebody, project_name=project_name).dump(output_dir=output_dir, prog="geneBody")
     RunCmds(cmds=cmds_genebody, silent=silent).running(n_jobs)
 # ----------------------------------bam QC------------------------------------ #
 
@@ -575,6 +582,7 @@ def quant(
                               config=config,
                               suffix=suffix,
                               ref=ref).make_cmds()
+            WriteCmds(cmds=cmds_rsem, project_name=project_name).dump(output_dir=output_dir, prog="RSEM")
             RunCmds(cmds=cmds_rsem, silent=silent).running(n_jobs)
         else:
             print("Not ready!")
@@ -606,6 +614,14 @@ def quant(
     required=True,
     type=click.Path(exists=True),
     help="Path to meta information of samples."
+)
+@click.option(
+    "-c",
+    "--counts_type",
+    default="gene",
+    show_default=True,
+    type=click.Choice(["gene", "exon", "exonbin"]),
+    help="Counts type."
 )
 @click.option(
     "-n",
@@ -675,6 +691,7 @@ def count(
         input_dir,
         output_dir,
         meta_file,
+        counts_type,
         n_jobs,
         tool,
         softwares,
@@ -695,6 +712,7 @@ def count(
     else:
         if tool == "GenomicAlignments":
             cmds_ga = Counts(meta_file=meta_file,
+                             counts_type=counts_type,
                              input_dir=input_dir,
                              output_dir=output_dir,
                              tool=tool,

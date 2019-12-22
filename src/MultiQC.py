@@ -10,8 +10,8 @@ import pathlib as pl
 
 class MultiQC:
     def __init__(self, input_dir, output_dir, output_name):
-        self.input_dir = str(pl.Path(input_dir)) + r"/"
-        self.output_dir = str(pl.Path(output_dir)) + r"/"
+        self.input_dir = str(pl.Path(input_dir).resolve()) + r"/"
+        self.output_dir = str(pl.Path(output_dir).resolve()) + r"/"
         self.output_name = output_name
 
     def make_cmds(self):

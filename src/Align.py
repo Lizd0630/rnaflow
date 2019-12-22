@@ -18,8 +18,8 @@ class Align:
         # ["Run", "R1", "R2", "Layout", "Strand_specificity"]
         # {"run": run[i], "r1": r1[i], "r2": r2[i], "layout": layout[i], "strand": strand[i]}
         self.meta_info = Meta(meta_file).get_info()
-        self.input_dir = str(pl.Path(input_dir)) + r"/"
-        self.output_dir = str(pl.Path(output_dir)) + r"/"
+        self.input_dir = str(pl.Path(input_dir).resolve()) + r"/"
+        self.output_dir = str(pl.Path(output_dir).resolve()) + r"/"
         self.software = tool
         self.ref = ref
         self.soft_path = ParseDict(softwares).dict

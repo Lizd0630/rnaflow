@@ -12,8 +12,8 @@ from src.Config import STAR_STAT, RSEM_MERGE, INFEREXPR_MERGE
 
 class Results:
     def __init__(self, input_dir, output_dir, project_name):
-        self.input_dir = str(pl.Path(input_dir)) + r"/"
-        self.output_dir = str(pl.Path(output_dir)) + r"/"
+        self.input_dir = str(pl.Path(input_dir).resolve()) + r"/"
+        self.output_dir = str(pl.Path(output_dir).resolve()) + r"/"
         self.proj = project_name
 
     def star(self):
