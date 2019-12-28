@@ -1,15 +1,19 @@
 ## RNA-seq pipeline
-#### lizhidan
+#### lizhidan, lzd_hunan@126.com
+
+## For what?
+1. fastqc - FastQC: FastQC
+2. trim - Trimming: fastp, Trimmomatic
+3. align - Alignments: STAR
+4. bamqc - bam QC: RSeQC, picard
+5. quant - Quantification: RSEM
+6. count - Reads counting: GenomicAlignments
+7. results - Results summarization
+
 
 ## Basic ideas
 ### Package dependency
 pandas, click
-
-### File dependency
-1. JSON file contains path to software be used (dictionary)
-2. JSON file contains parameters used in software, except for I/O files which will be determinated by metafile (dictionary, leave null if parameter has no values)
-3. Table seperated file contain at least 5 columns: Run, R1, R2, Layout, strand_specificity.
-
 
 ### Basic pipe
 1. Parse metainformation
@@ -17,9 +21,22 @@ pandas, click
 3. Combine software, parameters and I/O files to linux commands.
 4. Launch
 
+### File dependency
+1. JSON file contains path to software be used (dictionary)
+2. JSON file contains parameters used in software, except for I/O files which will be determinated by metafile (dictionary, leave null if parameter has no values)
+3. Table seperated file contain at least 5 columns: Run, R1, R2, Layout, strand_specificity.
 
-### example
-##### directory tree
+### Notes: software parameter JSON file
+#### Input, output, strandness, reference, log file, prefix, suffix, etc, should not in JSON files.
+#### For details,
+1. fastp: input/output, -j, -h, log file will be parsed from meta info
+2. Trimmomatic: adapter will be parsed via softpath
+3. STAR align: --genomeDir specified via command, --readFilesIn, --outFileNamePrefix will be parsed from meta info
+4. RSEM quantification: --strandness, --paired-end will be parsed from meta info, ref index specified via command
+
+
+## example
+### directory tree
 ```bash
 .
 |-- align
@@ -54,7 +71,7 @@ pandas, click
 |-- RSEM
 `-- summary
 ```
-
+### RNAseq simulation
 ```r
 library(polyester)
 library(Biostrings)
@@ -64,6 +81,8 @@ fold_changes = matrix(runif(4578 * 3, 1, 5), nrow=4578)
  simulate_experiment('RSEM/chr22.transcripts.fa', reads_per_transcript=readspertx, num_reps=c(1,1,1), fold_changes=fold_changes, outdir='simulated_reads2', paired=TRUE, strand_specific=TRUE)
  simulate_experiment('RSEM/chr22.transcripts.fa', reads_per_transcript=readspertx, num_reps=c(1,1,1), fold_changes=fold_changes, outdir='simulated_reads1', paired=FALSE, strand_specific=TRUE)
 ```
+
+### data manipulation
 ```bash
 ## fr-secondstrand
 seqtk seq -r sample_03.fasta > sample_03r.fasta
@@ -88,13 +107,6 @@ STAR   --runMode genomeGenerate \
 bash gtf_2_genePred_refFlat_bed12.bash -i chr22.gtf ./
 ```
 
-### Notes: software parameter JSON file
-#### Input, output, strandness, reference, log file, prefix, suffix, etc, should not in JSON files.
-#### For details,
-1. fastp: input/output, -j, -h, log file will be parsed from meta info
-2. Trimmomatic: adapter will be parsed via softpath
-3. STAR align: --genomeDir specified via command, --readFilesIn, --outFileNamePrefix will be parsed from meta info
-4. RSEM quantification: --strandness, --paired-end will be parsed from meta info, ref index specified via command
 
 
 ## To Do
