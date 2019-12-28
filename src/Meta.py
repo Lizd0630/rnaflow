@@ -12,7 +12,7 @@ import src.MyError as me
 
 class Meta:
     def __init__(self, meta_file):
-        self.meta_info = pd.read_csv(meta_file, sep="\t")
+        self.meta_info = pd.read_csv(meta_file, sep="\t", header=0)
         self.layouts = ['PAIRED', 'SINGLE']
         self.strands = ['fr-unstranded', 'fr-firststrand', 'fr-secondstrand']
 

@@ -131,16 +131,10 @@ merge_se <- function(x, y) {
         y_cnt <- assay(y)
         x_coldata <- colData(x)
         y_coldata <- colData(y)
-        se <- SummarizedExperiment(assays = cbind(x_cnt, y_cnt), rowRanges = rowranges, colData = rbind(x_coldata, y_coldata))
+        se <- SummarizedExperiment(assays = SimpleList(counts = cbind(x_cnt, y_cnt)), rowRanges = rowranges, colData = rbind(x_coldata, y_coldata))
     } else if (!is.null(x)) {
-        # rowranges <- rowRanges(get(x))
-        # x_cnt <- assay(get(x))
-        # se <- SummarizedExperiment(assays = x_cnt, rowRanges = rowranges, colData = x_coldata)
         se <- x
     } else if (!is.null(y)) {
-        # rowranges <- rowRanges(get(y))
-        # x_cnt <- assay(get(y))
-        # se <- SummarizedExperiment(assays = y_cnt, rowRanges = rowranges, colData = y_coldata)
         se <- y
     } else {
         se <- NULL
@@ -273,7 +267,7 @@ if (opts$counts_type == "gene") {
                                       reads = PE_0_bamlist,
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
-                                      singleEnd = FLASE,
+                                      singleEnd = FALSE,
                                       fragments = FALSE,
                                       strandMode = 0,
                                       param = sbp,

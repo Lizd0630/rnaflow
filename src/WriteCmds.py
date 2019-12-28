@@ -18,4 +18,4 @@ class WriteCmds:
         out_dir = str(pl.Path(output_dir).resolve()) + r"/"
         outfile = out_dir + self.proj + r"." + prog + ".cmds.bash"
         with open(outfile, "w") as out:
-            out.write("\n".join(self.cmds))
+            out.write("\n".join(self.cmds) + "\n")

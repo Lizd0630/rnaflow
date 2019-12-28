@@ -18,23 +18,27 @@ def run_sys(func, silent=True):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          shell=True)
-    p.wait()
+    stdout, stderr = p.communicate()
+    returncode = p.returncode
     t2 = time.asctime(time.localtime(time.time()))
-    print(f"{t2} finished:\n    {func}\n")
-    stderr = p.stderr.read().decode("utf-8")
-    if len(stderr) > 0:
-        print(f"Errors:\n{stderr}\n")
-    else:
-        pass
-    if silent:
-        pass
-    else:
-        print("Logs:\n")
-        stdout = p.stdout.read().decode("utf-8")
-        if len(stdout) > 0:
-            print(stdout)
+
+    if returncode == 0:
+        if silent:
+            print(f"{t2} finished:\n    {func}\n")
         else:
-            print("null")
+            stdout = stdout.decode("utf-8")
+            print(f"{t2} finished:\n    {func}\n")
+            if len(stdout) > 0:
+                print("Logs:\n")
+                print(f"{stdout}\n\n")
+            else:
+                print("Logs:\n")
+                print("null\n\n")
+    else:
+        stderr = stderr.decode("utf-8")
+        print(f"{t2} finished:\n    {func}\n")
+        print(f"Errors:\n")
+        print(f"{stderr}\n\n")
 
 
 class RunCmds:
@@ -72,3 +76,40 @@ class RunCmds:
 #                 # 进入for循环启动新的进程.否则就一直在while循环进入死循环
 #                 if(len(threading.enumerate()) < n_jobs):
 #                     break
+
+
+# def run_sys(func, silent=True):
+#     t1 = time.asctime(time.localtime(time.time()))
+#     print(f"{t1} perfoming:\n    {func}\n")
+#     if silent:
+#         p = subprocess.Popen(args=func,
+#                              stdin=subprocess.PIPE,
+#                              stdout=subprocess.PIPE,
+#                              stderr=subprocess.PIPE,
+#                              shell=True)
+#     else:
+#         p = subprocess.Popen(args=func,
+#                              stdin=subprocess.PIPE,
+#                              stderr=subprocess.PIPE,
+#                              shell=True)
+#     p.wait() ## 输出太多造成死锁
+
+#     t2 = time.asctime(time.localtime(time.time()))
+#     print(f"{t2} finished:\n    {func}\n")
+#     stderr = p.stderr.read().decode("utf-8")
+
+#     if len(stderr) > 0:
+#         print(f"Errors:\n")
+#         print(f"{stderr}\n\n")
+#     else:
+#         pass
+#     if silent:
+#         pass
+#     else:
+#         stdout = p.stdout.read().decode("utf-8")
+#         if len(stdout) > 0:
+#             print("Logs:\n")
+#             print(f"{stdout}\n\n")
+#         else:
+#             print("Logs:\n")
+#             print("null\n\n")

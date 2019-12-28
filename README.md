@@ -18,10 +18,75 @@ pandas, click
 4. Launch
 
 
+### example
+##### directory tree
+```bash
+.
+|-- align
+|-- bam_QC
+|-- clean
+|   |-- fastp
+|   `-- trimmomatic
+|-- counts
+|-- meta
+|   `-- meta.tsv
+|-- raw
+|   |-- sample_A.fastq.gz
+|   |-- sample_B.fastq.gz
+|   |-- sample_C.fastq.gz
+|   |-- sample_D_1.fastq.gz
+|   |-- sample_D_2.fastq.gz
+|   |-- sample_E_1.fastq.gz
+|   |-- sample_E_2.fastq.gz
+|   |-- sample_F_1.fastq.gz
+|   `-- sample_F_2.fastq.gz
+|-- ref
+|   |-- chr22.bed12
+|   |-- chr22.fa
+|   |-- chr22.genePred
+|   |-- chr22.gtf
+|   |-- chr22.refFlat
+|   |-- chr22.sorted.bed12
+|   |-- chr22.splicesites
+|   |-- chr22.splicesites.fmt
+|   |-- RSEM
+|   `-- STAR
+|-- RSEM
+`-- summary
+```
+
+```r
+library(polyester)
+library(Biostrings)
+fasta = readDNAStringSet("RSEM/chr22.transcripts.fa")
+readspertx = round(20 * width(fasta) / 100)
+fold_changes = matrix(runif(4578 * 3, 1, 5), nrow=4578)
+ simulate_experiment('RSEM/chr22.transcripts.fa', reads_per_transcript=readspertx, num_reps=c(1,1,1), fold_changes=fold_changes, outdir='simulated_reads2', paired=TRUE, strand_specific=TRUE)
+ simulate_experiment('RSEM/chr22.transcripts.fa', reads_per_transcript=readspertx, num_reps=c(1,1,1), fold_changes=fold_changes, outdir='simulated_reads1', paired=FALSE, strand_specific=TRUE)
+```
+```bash
+## fr-secondstrand
+seqtk seq -r sample_03.fasta > sample_03r.fasta
+
+## fasta2fastq https://github.com/ekg/fasta-to-fastq.git
+perl fasta-to-fastq/fasta_to_fastq.pl fasta > fastq
+
+gzip
+```
+
 ### examples related software
 1. STAR index version: 2.7.1a
 2. RSEM index version: v1.3.1
+```bash
+rsem-prepare-reference --gtf chr22.gtf chr22.fa ./RSEM/chr22
+STAR   --runMode genomeGenerate \
+       --runThreadN 8 \
+       --genomeDir ./ \
+       --genomeFastaFiles ../chr22.fa \
+       --sjdbGTFfile ../chr22.gtf
 
+bash gtf_2_genePred_refFlat_bed12.bash -i chr22.gtf ./
+```
 
 ### Notes: software parameter JSON file
 #### Input, output, strandness, reference, log file, prefix, suffix, etc, should not in JSON files.

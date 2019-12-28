@@ -1,6 +1,6 @@
 {
     "infer_expr": {
-        "-s": "5000000"
+        "-s": "3000000"
     },
     "rnametrics": {
         "MINIMUM_LENGTH": "500"

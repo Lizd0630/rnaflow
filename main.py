@@ -68,7 +68,7 @@ from src.Results import Results
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of MultiQC."
+    help="Out prefix of command-file and MultiQC."
 )
 @click.option(
     "--config",
@@ -166,7 +166,7 @@ def fastqc(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of MultiQC if use fastp."
+    help="Out prefix of command-file and MultiQC if use fastp."
 )
 @click.option(
     "--config",
@@ -282,7 +282,7 @@ def trim(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of MultiQC."
+    help="Out prefix of command-file and MultiQC."
 )
 @click.option(
     "--config",
@@ -401,7 +401,7 @@ def align(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of merged output file."
+    help="Out prefix of command-file."
 )
 @click.option(
     "--config",
@@ -530,7 +530,7 @@ def bamqc(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of results if have."
+    help="Out prefix of command-file and results if generate."
 )
 @click.option(
     "--config",

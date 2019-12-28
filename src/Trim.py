@@ -92,7 +92,6 @@ class Trim:
                     cmd = f"{self.soft_path['fastp']} {self.config} \
                             -i {R1} \
                             -o {self.output_dir}{out1} \
-                            --unpaired1 {self.output_dir}{up1} \
                             --failed_out {self.output_dir}{failed} \
                             -j {self.output_dir}{j_file} \
                             -h {self.output_dir}{h_file} \
