@@ -25,7 +25,7 @@ class FastQC:
 
     def make_cmds(self):
         cmds = []
-        allfiles = [str(i) for i in pl.Path(self.input_dir).rglob(r"*")]
+        allfiles = [str(i) for i in pl.Path(self.input_dir).rglob(r"*gz")]
         for meta in self.meta_info:
             if meta["layout"] == "PAIRED":
                 pattern1 = re.compile(self.input_dir + meta["r1"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz" + r"$")

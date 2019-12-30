@@ -16,11 +16,21 @@ class Results:
         self.output_dir = str(pl.Path(output_dir).resolve()) + r"/"
         self.proj = project_name
 
+    # def star(self):
+    #     cmds = []
+    #     cmd = f"bash {STAR_STAT}\
+    #             -i {self.input_dir} \
+    #             > {self.output_dir}{self.proj}_STARfinal.tsv"
+    #     cmd = re.sub(" {2,}", " ", cmd)
+    #     cmds.append(cmd)
+    #     return(cmds)
+
     def star(self):
         cmds = []
-        cmd = f"bash {STAR_STAT}\
+        cmd = f"python3 {STAR_STAT}\
                 -i {self.input_dir} \
-                > {self.output_dir}{self.proj}_STARfinal.tsv"
+                -o {self.output_dir} \
+                -p {self.proj}"
         cmd = re.sub(" {2,}", " ", cmd)
         cmds.append(cmd)
         return(cmds)
