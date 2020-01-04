@@ -661,7 +661,7 @@ def quant(
 @click.option(
     "--suffix",
     type=str,
-    default="Aligned.toTranscriptome.out.bam",
+    default="Aligned.sortedByCoord.out.bam",
     show_default=True,
     help="Suffix of bam files, default is STAR's."
 )

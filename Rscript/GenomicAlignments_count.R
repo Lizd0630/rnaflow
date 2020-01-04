@@ -153,7 +153,7 @@ bamfiles <- list.files(path = file.path(opts$in_dir), pattern = paste0("*", opts
 
 
 #-----------------------------------------------------------------------------#
-cat(date(), ", make genome features objects.\n")
+cat(date(), "make genome features objects.\n")
 
 ## meta information table
 meta <- read.table(opts$meta_file, header=T, sep="\t", stringsAsFactors = FALSE)
@@ -173,7 +173,7 @@ ebg <- exonsBy(txdb, by="gene")
 #-----------------------------------------------------------------------------#
 
 
-cat(date(), ", reads counting.\n")
+cat(date(), "reads counting.\n")
 
 if (TRUE) {
     options(mc.cores=opts$num_threads)
@@ -490,4 +490,4 @@ if (opts$counts_type == "gene") {
 }
 
 
-cat(date(), ", all done!\n")
+cat(date(), "all done!\n")
