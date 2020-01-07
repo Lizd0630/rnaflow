@@ -25,6 +25,8 @@ def read_starLog(file):
     df.columns = ["Run", filename]
     df = df[df[filename].notna()]
     df[filename] = df[filename].str.replace("\t", "")
+    df["Run"] = df["Run"].str.replace(" $", "")
+    df["Run"] = [re.sub("^ *", "", x) for x in list(df["Run"])]
     return df
 
 
@@ -35,11 +37,11 @@ class StarStat:
         self.proj = project_name
 
     def multi_merge(self):
-        allfiles = [str(i) for i in pl.Path("align/").rglob(r"*Log.final.out")]
+        allfiles = [str(i) for i in pl.Path(self.input_dir).rglob(r"*Log.final.out")]
         alltabs = [read_starLog(file) for file in allfiles]
         df_final = reduce(lambda left, right: pd.merge(left, right, on=['Run']), alltabs)
-        df_final["Run"] = df_final["Run"].str.replace(" $", "")
-        df_final["Run"] = [re.sub("^ *", "", x) for x in list(df_final["Run"])]
+        # df_final["Run"] = df_final["Run"].str.replace(" $", "")
+        # df_final["Run"] = [re.sub("^ *", "", x) for x in list(df_final["Run"])]
         return df_final.T
 
 
