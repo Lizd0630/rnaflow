@@ -10,11 +10,11 @@ Created by Zhang yimng at 2018.11.24
 """
 
 import click
+import src.Config as Config
 from src.WriteCmds import WriteCmds
 from src.FastQC import FastQC
 from src.MultiQC import MultiQC
 from src.RunCmds import RunCmds
-import src.Config as Config
 from src.Trim import Trim
 from src.Align import Align
 from src.BamQC import BamQC
@@ -33,7 +33,7 @@ from src.Results import Results
     "--input_dir",
     required=True,
     type=click.Path(exists=True),
-    help="Path to directory of input fastq files."
+    help="Path to directory of input files(fq.gz)."
 )
 @click.option(
     "-o",
@@ -47,7 +47,7 @@ from src.Results import Results
     "--meta_file",
     required=True,
     type=click.Path(exists=True),
-    help="Path to meta information of samples."
+    help="Path to file of meta information."
 )
 @click.option(
     "-n",
@@ -55,7 +55,7 @@ from src.Results import Results
     default=1,
     show_default=True,
     type=click.IntRange(1, 12, clamp=True),
-    help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
+    help="Number of jobs to run in parallel. Finally CPU usage: n_jobs * threads/job."
 )
 @click.option(
     "--softwares",
@@ -68,21 +68,21 @@ from src.Results import Results
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of command-file and MultiQC."
+    help="Out prefix of command-file and MultiQC output."
 )
 @click.option(
     "--config",
     default=Config.FASTQC_CONFIG,
     show_default=True,
     type=click.Path(exists=True),
-    help="Path to JSON file(parameters)."
+    help="Path to config file(parameters) of software used in current task."
 )
 @click.option(
     "--silent",
     default=True,
     show_default=True,
     type=bool,
-    help="Whether suppress information in process."
+    help="Whether suppress information produced during processing."
 )
 @click.version_option(Config.VERSION, message='%(version)s')
 def fastqc(
@@ -96,7 +96,7 @@ def fastqc(
         silent
 ):
     u"""
-    Perform fastqc of files in meta information.
+    Perform fastqc of samples in meta information.
     """
     cmds_fastqc = FastQC(meta_file=meta_file,
                          input_dir=input_dir,
@@ -106,7 +106,8 @@ def fastqc(
     cmds_multiqc = MultiQC(input_dir=output_dir,
                            output_dir=output_dir,
                            output_name=project_name).make_cmds()
-    WriteCmds(cmds=cmds_fastqc, project_name=project_name).dump(output_dir=output_dir, prog="fastqc")
+    WriteCmds(cmds=cmds_fastqc, 
+              project_name=project_name).dump(output_dir=output_dir, prog="fastqc")
     RunCmds(cmds=cmds_fastqc, silent=silent).running(n_jobs)
     RunCmds(cmds=cmds_multiqc, silent=silent).running(1)
 # ----------------------------------FastQC------------------------------------ #
@@ -115,14 +116,14 @@ def fastqc(
 # ----------------------------------Trimming---------------------------------- #
 @click.command(
     context_settings=Config.CONTEXT_SETTINGS,
-    short_help="Run fastq trimming, Trimmomatic or fastp."
+    short_help="Run fastq trimming: Trimmomatic or fastp."
 )
 @click.option(
     "-i",
     "--input_dir",
     required=True,
     type=click.Path(exists=True),
-    help="Path to directory of input fastq files."
+    help="Path to directory of input files(fq.gz)."
 )
 @click.option(
     "-o",
@@ -136,7 +137,7 @@ def fastqc(
     "--meta_file",
     required=True,
     type=click.Path(exists=True),
-    help="Path to meta information of samples."
+    help="Path to file of meta information."
 )
 @click.option(
     "-n",
@@ -144,7 +145,7 @@ def fastqc(
     default=1,
     show_default=True,
     type=click.IntRange(1, 12, clamp=True),
-    help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
+    help="Number of jobs to run in parallel. Finally CPU usage: n_jobs * threads/job."
 )
 @click.option(
     "-t",
@@ -160,25 +161,25 @@ def fastqc(
     default=Config.SOFTWARES,
     show_default=True,
     type=click.Path(exists=True),
-    help="Path to json file of softwares."
+    help="Path to JSON file which contains software path."
 )
 @click.option(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of command-file and MultiQC if use fastp."
+    help="Out prefix of command-file, and MultiQC output if use fastp."
 )
 @click.option(
     "--config",
     type=click.Path(exists=True),
-    help="Path to config file(parameters)."
+    help="Path to config file(parameters) of software used in current task."
 )
 @click.option(
     "--silent",
     default=True,
     show_default=True,
     type=bool,
-    help="Whether suppress information in process."
+    help="Whether suppress information produced during process."
 )
 @click.version_option(Config.VERSION, message="%(version)s")
 def trim(
@@ -246,7 +247,7 @@ def trim(
     "--meta_file",
     required=True,
     type=click.Path(exists=True),
-    help="Path to meta information of samples."
+    help="Path to file of meta information."
 )
 @click.option(
     "-n",
@@ -254,7 +255,7 @@ def trim(
     default=1,
     show_default=True,
     type=click.IntRange(1, 12, clamp=True),
-    help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
+    help="Number of jobs to run in parallel. Finally CPU usage: n_jobs * threads/job."
 )
 @click.option(
     "-t",
@@ -276,7 +277,7 @@ def trim(
     default=Config.SOFTWARES,
     show_default=True,
     type=click.Path(exists=True),
-    help="Path to json file of softwares."
+    help="Path to JSON file which contains software path."
 )
 @click.option(
     "--project_name",
@@ -287,14 +288,14 @@ def trim(
 @click.option(
     "--config",
     type=click.Path(exists=True),
-    help="Path to config file(parameters)."
+    help="Path to config file(parameters) of software used in current task."
 )
 @click.option(
     "--silent",
     default=True,
     show_default=True,
     type=bool,
-    help="Whether suppress information in process."
+    help="Whether suppress information produced during process."
 )
 @click.version_option(Config.VERSION, message="%(version)s")
 def align(
@@ -361,7 +362,7 @@ def align(
     "--meta_file",
     required=True,
     type=click.Path(exists=True),
-    help="Path to meta information of samples."
+    help="Path to file of meta information."
 )
 @click.option(
     "-n",
@@ -369,7 +370,7 @@ def align(
     default=1,
     show_default=True,
     type=click.IntRange(1, 12, clamp=True),
-    help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
+    help="Number of jobs to run in parallel. Finally CPU usage: n_jobs * threads/job."
 )
 @click.option(
     "--suffix",
@@ -382,20 +383,20 @@ def align(
     "--bed12",
     type=click.Path(exists=True),
     required=True,
-    help="Reference, for RSeQC is bed12 file: infer_experiment, genebody_coverage."
+    help="bed12 file, for RSeQC: infer_experiment, genebody_coverage."
 )
 @click.option(
     "--refflat",
     type=click.Path(exists=True),
     required=True,
-    help="Reference, for picard is refFlat: CollectRnaSeqMetrics."
+    help="refFlat, for picard: CollectRnaSeqMetrics."
 )
 @click.option(
     "--softwares",
     default=Config.SOFTWARES,
     show_default=True,
     type=click.Path(exists=True),
-    help="Path to json file of softwares."
+    help="Path to JSON file which contains software path."
 )
 @click.option(
     "--project_name",
@@ -408,14 +409,14 @@ def align(
     default=Config.BAMQC_CONFIG,
     show_default=True,
     type=click.Path(exists=True),
-    help="Path to config file(parameters)."
+    help="Path to config file(parameters) of software used in current task."
 )
 @click.option(
     "--silent",
     default=True,
     show_default=True,
     type=bool,
-    help="Whether suppress information in process."
+    help="Whether suppress information produced during process."
 )
 @click.version_option(Config.VERSION, message="%(version)s")
 def bamqc(
@@ -494,7 +495,7 @@ def bamqc(
     "--meta_file",
     required=True,
     type=click.File("r"),
-    help="Path to meta information of samples."
+    help="Path to file of meta information."
 )
 @click.option(
     "-n",
@@ -502,7 +503,7 @@ def bamqc(
     default=1,
     show_default=True,
     type=click.IntRange(1, 12, clamp=True),
-    help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
+    help="Number of jobs to run in parallel. Finally CPU usage: n_jobs * threads/job."
 )
 @click.option(
     "-t",
@@ -517,14 +518,14 @@ def bamqc(
     "--ref",
     type=str,
     required=True,
-    help="Alignment reference, like RSEM index."
+    help="Quantification reference, like RSEM index."
 )
 @click.option(
     "--softwares",
     default=Config.SOFTWARES,
     show_default=True,
     type=click.Path(exists=True),
-    help="Path to json file of softwares."
+    help="Path to JSON file which contains software path."
 )
 @click.option(
     "--project_name",
@@ -535,21 +536,21 @@ def bamqc(
 @click.option(
     "--config",
     type=click.Path(exists=True),
-    help="Path to config file(parameters)."
+    help="Path to config file(parameters) of software used in current task."
 )
 @click.option(
     "--suffix",
     type=str,
     default="Aligned.toTranscriptome.out.bam",
     show_default=True,
-    help="Suffix of bam files, default is STAR's."
+    help="Suffix of input bam files, default is STAR's."
 )
 @click.option(
     "--silent",
     default=True,
     show_default=True,
     type=bool,
-    help="Whether suppress information in process."
+    help="Whether suppress information produced during process."
 )
 @click.version_option(Config.VERSION, message="%(version)s")
 def quant(
@@ -613,7 +614,7 @@ def quant(
     "--meta_file",
     required=True,
     type=click.Path(exists=True),
-    help="Path to meta information of samples."
+    help="Path to file of meta information."
 )
 @click.option(
     "-c",
@@ -629,7 +630,7 @@ def quant(
     default=1,
     show_default=True,
     type=click.IntRange(1, 12, clamp=True),
-    help="Number of running jobs at the same time. Finally CPU: n_jobs * threads/job."
+    help="Number of jobs to run in parallel. Finally CPU usage: n_jobs * threads/job."
 )
 @click.option(
     "-t",
@@ -645,25 +646,25 @@ def quant(
     default=Config.SOFTWARES,
     show_default=True,
     type=click.Path(exists=True),
-    help="Path to json file of softwares."
+    help="Path to JSON file which contains software path."
 )
 @click.option(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of MultiQC if use fastp."
+    help="Out prefix of output."
 )
 @click.option(
     "--config",
     type=click.Path(exists=True),
-    help="Path to config file(parameters). Useless for GenomicAlignmets."
+    help="Path to config file(parameters) of software used in current task. Useless for GenomicAlignmets."
 )
 @click.option(
     "--suffix",
     type=str,
     default="Aligned.sortedByCoord.out.bam",
     show_default=True,
-    help="Suffix of bam files, default is STAR's."
+    help="Suffix of input bam files, default is STAR's."
 )
 @click.option(
     "--ref",
@@ -684,7 +685,7 @@ def quant(
     default=True,
     show_default=True,
     type=bool,
-    help="Whether suppress information in process."
+    help="Whether suppress information produced during process."
 )
 @click.version_option(Config.VERSION, message='%(version)s')
 def count(
@@ -754,27 +755,33 @@ def count(
     required=True,
     default="STAR",
     show_default=True,
-    type=click.Choice(["STAR", "RSEM", "infer_expr", "RNAmetrics"]),
+    type=click.Choice(["STAR", "RSEM", "infer_expr", "CollectRnaSeqMetrics", "geneBody_coverage"]),
     help="Software which results produced by.",
+)
+@click.option(
+    "--suffix",
+    type=str,
+    help="Suffix of individual files of samples.",
 )
 @click.option(
     "--project_name",
     required=True,
     type=str,
-    help="Out prefix of processed files."
+    help="Out prefix of summaried files."
 )
 @click.option(
     "--silent",
     default=False,
     show_default=True,
     type=bool,
-    help="Whether suppress information in process."
+    help="Whether suppress information produced during process."
 )
 @click.version_option(Config.VERSION, message='%(version)s')
 def results(
         input_dir,
         output_dir,
         tool,
+        suffix,
         project_name,
         silent
 ):
@@ -796,10 +803,23 @@ def results(
                             project_name=project_name).rsem()
         RunCmds(cmds=cmds_rsem, silent=silent).running(1)
     elif tool == "infer_expr":
+        suffix = Config.RESULTS_SUFFIX["infer_expr"]
         cmds_infer = Results(input_dir=input_dir,
                              output_dir=output_dir,
-                             project_name=project_name).infer_expr()
+                             project_name=project_name).infer_expr(suffix)
         RunCmds(cmds=cmds_infer, silent=silent).running(1)
+    elif tool == "CollectRnaSeqMetrics":
+        suffix = Config.RESULTS_SUFFIX["CollectRnaSeqMetrics"]
+        cmds_metrics = Results(input_dir=input_dir,
+                               output_dir=output_dir,
+                               project_name=project_name).RNAmetrics(suffix)
+        RunCmds(cmds=cmds_metrics, silent=silent).running(1)
+    elif tool == "geneBody_coverage":
+        suffix = Config.RESULTS_SUFFIX["geneBody_coverage"]
+        cmds_genebody = Results(input_dir=input_dir,
+                                output_dir=output_dir,
+                                project_name=project_name).geneBody(suffix)
+        RunCmds(cmds=cmds_genebody, silent=silent).running(1)
     else:
         print("Not ready!")
 # ------------------------------reuslts process------------------------------- #
@@ -819,9 +839,9 @@ def main():
         bamqc: bam QC\n
         quant: Quantification\n
         count: Reads counting\n
-        results: Results summarization\n
+        results: Summarization or Plotting\n
     \n
-                                            Li zhidan, 2019.12
+                                                            Li zhidan, 2019.12
     """
     pass
 

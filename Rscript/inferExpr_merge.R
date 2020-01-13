@@ -23,16 +23,22 @@ opt_list <- list(
         metavar = "character"
         ),
     make_option(
-        c("-p", "--pattern"),
+        c("-o", "--outdir"),
+        type = "character",
+        help = "Directory of merged file names.",
+        metavar = "character"
+        ),
+    make_option(
+        c("--suffix"),
         type = "character",
         help = "Suffix of log files.",
         metavar = "character",
         default = "inferExpr.log"
         ),
     make_option(
-        c("-o", "--outfile"),
+        c("--project_name"),
         type = "character",
-        help = "Merged file names.",
+        help = "Prefix of output files.",
         metavar = "character"
         )
 )
@@ -45,13 +51,13 @@ opts <- parse_args(OptionParser(option_list = opt_list,
 
 if (is.null(opts$indir)) {
     stop("-i --indir not set")
-} else if (is.null(opts$outfile)) {
-    stop("-o --outfile not set")
+} else if (is.null(opts$outdir)) {
+    stop("-o --outdir not set")
 }
 
 
-multiMerge <- function(path = opts$indir,
-                       pattern = opts$pattern) {
+multiMerge <- function(path,
+                       pattern) {
     files <- file.path(path, list.files(path, pattern = pattern, recursive = TRUE))
     fileList <- lapply(files, function(x) {tail(readLines(x), 4)})
     names(fileList) <- sub(paste0("[^0-9a-zA-Z]*", pattern, "$"), "", basename(files))
@@ -81,6 +87,6 @@ multiMerge <- function(path = opts$indir,
 }
 
 
-res <- multiMerge()
+res <- multiMerge(opts$indir, opts$suffix)
 
-write.table(res, file = opts$outfile, sep = "\t", row.names = FALSE, quote = FALSE)
+write.table(res, file = file.path(opts$outdir, paste0(opts$project_name, "_inferExpr.tsv")), sep = "\t", row.names = FALSE, quote = FALSE)

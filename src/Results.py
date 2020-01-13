@@ -7,7 +7,7 @@
 
 import pathlib as pl
 import re
-from src.Config import STAR_STAT, RSEM_MERGE, INFEREXPR_MERGE
+from src.Config import STAR_STAT, RSEM_MERGE, INFEREXPR_MERGE, RESULTS_RNAMETRICS, RESULTS_GENEBODY
 
 
 class Results:
@@ -27,7 +27,7 @@ class Results:
 
     def star(self):
         cmds = []
-        cmd = f"python3 {STAR_STAT}\
+        cmd = f"python3 {STAR_STAT} \
                 -i {self.input_dir} \
                 -o {self.output_dir} \
                 -p {self.proj}"
@@ -37,19 +37,43 @@ class Results:
 
     def rsem(self):
         cmds = []
-        cmd = f"bash {RSEM_MERGE}\
+        cmd = f"Rscript {RSEM_MERGE} \
                 -i {self.input_dir} \
-                -o {self.output_dir}{self.proj}"
+                -o {self.output_dir} \
+                --project_name {self.proj}"
         cmd = re.sub(" {2,}", " ", cmd)
         cmds.append(cmd)
         return(cmds)
 
-    def infer_expr(self):
+    def infer_expr(self, suffix):
         cmds = []
-        cmd = f"bash {INFEREXPR_MERGE}\
+        cmd = f"Rscript {INFEREXPR_MERGE} \
                 -i {self.input_dir} \
-                -p inferExpr.log \
-                -o {self.output_dir}{self.proj}"
+                -o {self.output_dir} \
+                --suffix {suffix} \
+                --project_name {self.proj}"
+        cmd = re.sub(" {2,}", " ", cmd)
+        cmds.append(cmd)
+        return(cmds)
+
+    def RNAmetrics(self, suffix):
+        cmds = []
+        cmd = f"Rscript {RESULTS_RNAMETRICS} \
+                -i {self.input_dir} \
+                -o {self.output_dir} \
+                --suffix {suffix} \
+                --project_name {self.proj}"
+        cmd = re.sub(" {2,}", " ", cmd)
+        cmds.append(cmd)
+        return(cmds)
+
+    def geneBody(self, suffix):
+        cmds = []
+        cmd = f"Rscript {RESULTS_GENEBODY} \
+                -i {self.input_dir} \
+                -o {self.output_dir} \
+                --suffix {suffix} \
+                --project_name {self.proj}"
         cmd = re.sub(" {2,}", " ", cmd)
         cmds.append(cmd)
         return(cmds)

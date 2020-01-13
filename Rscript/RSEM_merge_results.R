@@ -24,9 +24,15 @@ opt_list <- list(
         metavar = "character"
         ),
     make_option(
-        c("-o", "--out_prefix"),
+        c("-o", "--out_dir"),
         type = "character",
-        help = "Output prefix of merged file.",
+        help = "Output directory of merged files.",
+        metavar = "character"
+        ),
+    make_option(
+        c("--project_name"),
+        type = "character",
+        help = "Prefix of merged results.",
         metavar = "character"
         )
 )
@@ -40,8 +46,10 @@ opts <- parse_args(OptionParser(
 
 if (is.null(opts$indir)) {
     stop("-i --indir not set")
-} else if (is.null(opts$out_prefix)) {
-    stop("-o --out_prefix not set")
+} else if (is.null(opts$out_dir)) {
+    stop("-o --out_dir not set")
+} else if (is.null(opts$project_name)) {
+    stop("-o --project_name not set")
 }
 
 
@@ -56,7 +64,7 @@ geneMerge <- function(path,
     setkey(tmp, gene_id)
     return(tmp)})
   all <- Reduce(function(x,y) {merge(x, y, all=T, by="gene_id")}, datalist)
-  outname <- paste0(opts$out_prefix, "_Gene_", type, ".tsv")
+  outname <- file.path(opts$out_dir, paste0(opts$project_name, "_Gene_", type, ".tsv"))
   fwrite(all, file = outname, sep = "\t")
 }
 
@@ -72,7 +80,7 @@ isoMerge <- function(path,
     setkey(tmp, transcript_id)
     return(tmp)})
   all <- Reduce(function(x,y) {merge(x, y, all=T, by=c("transcript_id", "gene_id"))}, datalist)
-  outname <- paste0(opts$out_prefix, "_Iso_", type, ".tsv")
+  outname <- file.path(opts$out_dir, paste0(opts$project_name, "_Iso_", type, ".tsv"))
   fwrite(all, file = outname, sep = "\t")
 }
 
