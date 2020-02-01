@@ -1,5 +1,4 @@
 {
-    "STAR_stat": "Bash/STAR_stat.bash",
     "Trimmomatic": "/home/lizhidan/software/Trimmomatic-0.39/trimmomatic-0.39.jar",
     "fastp": "/home/lizhidan/software/fastp/fastp",
     "fastqc": "/home/lizhidan/software/FastQC/fastqc",

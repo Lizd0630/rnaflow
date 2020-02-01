@@ -1,6 +1,5 @@
 {
     "STAR": "/mnt/Software_shared/lizhidan/STAR-2.7.1a/bin/Linux_x86_64/STAR",
-    "STAR_stat": "Bash/STAR_stat.bash",
     "Trimmomatic": "/mnt/Software_shared/lizhidan/Trimmomatic-0.39/trimmomatic-0.39.jar",
     "fastp": "/mnt/Software_shared/lizhidan/Fastp/fastp",
     "fastqc": "/mnt/Software_shared/lizhidan/FastQC/fastqc",
