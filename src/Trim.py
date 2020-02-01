@@ -8,6 +8,7 @@
 
 from src.Meta import Meta
 from src.Config import ParseDict
+from src.Config import READ1, READ2
 import pathlib as pl
 import re
 import src.MyError as me
@@ -29,8 +30,8 @@ class Trim:
         allfiles = [str(i) for i in pl.Path(self.input_dir).rglob(r"*")]
         for meta in self.meta_info:
             if meta["layout"] == "PAIRED":
-                pattern1 = re.compile(self.input_dir + meta["r1"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz" + r"$")
-                pattern2 = re.compile(self.input_dir + meta["r2"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[2]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz" + r"$")
+                pattern1 = re.compile(self.input_dir + meta["r1"] + READ1 + r"$")
+                pattern2 = re.compile(self.input_dir + meta["r2"] + READ2 + r"$")
                 R1 = list(filter(lambda x: pattern1.match(x) is not None, allfiles))
                 if len(R1) == 1:
                     R1 = R1[0]
@@ -78,7 +79,7 @@ class Trim:
                     cmd = re.sub(" {2,}", " ", cmd)
                     cmds.append(cmd)
             elif meta["layout"] == "SINGLE":
-                pattern1 = re.compile(self.input_dir + meta["r1"] + r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz" + r"$")
+                pattern1 = re.compile(self.input_dir + meta["r1"] + READ1 + r"$")
                 R1 = list(filter(lambda x: pattern1.match(x) is not None, allfiles))
                 if len(R1) == 1:
                     R1 = R1[0]

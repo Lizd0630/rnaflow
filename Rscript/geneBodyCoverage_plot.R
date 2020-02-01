@@ -79,7 +79,7 @@ merge_files <- function(files) {
     return(read_cover)
 }
 
-files <- list.files(opts$indir, pattern = opts$suffix, full.names = TRUE)
+files <- list.files(opts$indir, pattern = paste0(opts$suffix, "$"), full.names = TRUE)
 
 read_cover <- merge_files(files)
 read_cover <- read_cover/rowMeans(read_cover)
@@ -90,9 +90,9 @@ read_cover <- melt(read_cover, id.vars = c('Run'))
 colnames(read_cover)[2] <- "Pos"
 read_cover$Pos <- as.numeric(as.vector(sub("^X", "", read_cover$Pos)))
 
-width <- floor(length(files)/20) + 8
+height <- floor(length(files)/20) + 8
 
-pdf(paste0(opts$project_name, "_RSeQC_geneBodyCoverage.pdf"), width = width, height = 6)
+pdf(paste0(opts$project_name, "_RSeQC_geneBodyCoverage.pdf"), width = 8, height = height)
 ggplot(read_cover, aes(x = Pos, y = value, color = Run)) + 
     geom_line() + 
     theme_bw() + 
@@ -100,6 +100,7 @@ ggplot(read_cover, aes(x = Pos, y = value, color = Run)) +
           axis.text = element_text(size = 6,face = "bold"), 
           plot.title = element_text(hjust = 0.5, size = 12,face = "bold"), 
           axis.text.x=element_text(angle=45,hjust=1, vjust=1),
-          legend.text = element_text(size=6, face="bold")) + 
+          legend.text = element_text(size=6, face="bold"),
+          legend.position = "bottom") + 
     labs(title = "Gene coverage(RSeQC)", x = "Gene body percentile (5'->3')", y = "")
 dev.off()

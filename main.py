@@ -102,13 +102,17 @@ def fastqc(
                          input_dir=input_dir,
                          output_dir=output_dir,
                          config=config,
-                         softwares=softwares).make_cmds()
+                         softwares=softwares)
+    cmds_fastqc = cmds_fastqc.make_cmds()
+    writecmds = WriteCmds(cmds=cmds_fastqc,
+                          project_name=project_name)
+    writecmds = writecmds.dump(output_dir=output_dir, prog="fastqc")
+    RunCmds(cmds=cmds_fastqc, silent=silent).running(n_jobs)
+
     cmds_multiqc = MultiQC(input_dir=output_dir,
                            output_dir=output_dir,
-                           output_name=project_name).make_cmds()
-    WriteCmds(cmds=cmds_fastqc, 
-              project_name=project_name).dump(output_dir=output_dir, prog="fastqc")
-    RunCmds(cmds=cmds_fastqc, silent=silent).running(n_jobs)
+                           output_name=project_name)
+    cmds_multiqc = cmds_multiqc.make_cmds()
     RunCmds(cmds=cmds_multiqc, silent=silent).running(1)
 # ----------------------------------FastQC------------------------------------ #
 
@@ -210,12 +214,16 @@ def trim(
                      output_dir=output_dir,
                      tool=tool,
                      softwares=softwares,
-                     config=config).make_cmds()
+                     config=config)
+    cmds_trim = cmds_trim.make_cmds()
     cmds_multiqc = MultiQC(input_dir=output_dir,
                            output_dir=output_dir,
-                           output_name=project_name).make_cmds()
-    WriteCmds(cmds=cmds_trim, project_name=project_name).dump(output_dir=output_dir, prog="trim")
+                           output_name=project_name)
+    cmds_multiqc = cmds_multiqc.make_cmds()
+    writecmds = WriteCmds(cmds=cmds_trim, project_name=project_name)
+    writecmds = writecmds.dump(output_dir=output_dir, prog="trim")
     RunCmds(cmds=cmds_trim, silent=silent).running(n_jobs)
+
     if tool == "Trimmomatic":
         pass
     else:
@@ -326,12 +334,16 @@ def align(
                                tool=tool,
                                ref=ref,
                                softwares=softwares,
-                               config=config).make_cmds()
+                               config=config)
+            cmds_align = cmds_align.make_cmds()
+            writecmds = WriteCmds(cmds=cmds_align, project_name=project_name)
+            writecmds = writecmds.dump(output_dir=output_dir, prog="align")
+            RunCmds(cmds=cmds_align, silent=silent).running(n_jobs)
+
             cmds_multiqc = MultiQC(input_dir=output_dir,
                                    output_dir=output_dir,
-                                   output_name=project_name).make_cmds()
-            WriteCmds(cmds=cmds_align, project_name=project_name).dump(output_dir=output_dir, prog="align")
-            RunCmds(cmds=cmds_align, silent=silent).running(n_jobs)
+                                   output_name=project_name)
+            cmds_multiqc = cmds_multiqc.make_cmds()
             RunCmds(cmds=cmds_multiqc, silent=silent).running(1)
         else:
             print("Not ready!")
@@ -445,9 +457,12 @@ def bamqc(
                        refFlat=refflat,
                        softwares=softwares,
                        config=config,
-                       suffix=suffix).infer_expr()
-    WriteCmds(cmds=cmds_infer, project_name=project_name).dump(output_dir=output_dir, prog="inferExpr")
+                       suffix=suffix)
+    cmds_infer = cmds_infer.infer_expr()
+    writecmds1 = WriteCmds(cmds=cmds_infer, project_name=project_name)
+    writecmds1 = writecmds1.dump(output_dir=output_dir, prog="inferExpr")
     RunCmds(cmds=cmds_infer, silent=silent).running(n_jobs)
+
     cmds_rnametrics = BamQC(meta_file=meta_file,
                             input_dir=input_dir,
                             output_dir=output_dir,
@@ -455,9 +470,12 @@ def bamqc(
                             refFlat=refflat,
                             softwares=softwares,
                             config=config,
-                            suffix=suffix).rnametrics()
-    WriteCmds(cmds=cmds_rnametrics, project_name=project_name).dump(output_dir=output_dir, prog="RNAmetrics")
+                            suffix=suffix)
+    cmds_rnametrics = cmds_rnametrics.rnametrics()
+    writecmds2 = WriteCmds(cmds=cmds_rnametrics, project_name=project_name)
+    writecmds2 = writecmds2.dump(output_dir=output_dir, prog="RNAmetrics")
     RunCmds(cmds=cmds_rnametrics, silent=silent).running(n_jobs)
+
     cmds_genebody = BamQC(meta_file=meta_file,
                           input_dir=input_dir,
                           output_dir=output_dir,
@@ -465,8 +483,10 @@ def bamqc(
                           refFlat=refflat,
                           softwares=softwares,
                           config=config,
-                          suffix=suffix).genebody()
-    WriteCmds(cmds=cmds_genebody, project_name=project_name).dump(output_dir=output_dir, prog="geneBody")
+                          suffix=suffix)
+    cmds_genebody = cmds_genebody.genebody()
+    writecmds3 = WriteCmds(cmds=cmds_genebody, project_name=project_name)
+    writecmds3 = writecmds3.dump(output_dir=output_dir, prog="geneBody")
     RunCmds(cmds=cmds_genebody, silent=silent).running(n_jobs)
 # ----------------------------------bam QC------------------------------------ #
 
@@ -582,8 +602,10 @@ def quant(
                               softwares=softwares,
                               config=config,
                               suffix=suffix,
-                              ref=ref).make_cmds()
-            WriteCmds(cmds=cmds_rsem, project_name=project_name).dump(output_dir=output_dir, prog="RSEM")
+                              ref=ref)
+            cmds_rsem = cmds_rsem.make_cmds()
+            writecmds = WriteCmds(cmds=cmds_rsem, project_name=project_name)
+            writecmds = writecmds.dump(output_dir=output_dir, prog="RSEM")
             RunCmds(cmds=cmds_rsem, silent=silent).running(n_jobs)
         else:
             print("Not ready!")
@@ -723,7 +745,8 @@ def count(
                              ref=ref,
                              ref_type=ref_type,
                              project_name=project_name,
-                             n_jobs=n_jobs).make_cmds()
+                             n_jobs=n_jobs)
+            cmds_ga = cmds_ga.make_cmds()
             RunCmds(cmds=cmds_ga, silent=silent).running(1)
         else:
             print("Not ready!")
@@ -792,33 +815,27 @@ def results(
         RSeQC: infer_experiment \n
         Picard: CollectRNAseqMetrics \n
     """
+    result = Results(input_dir=input_dir,
+                     output_dir=output_dir,
+                     project_name=project_name)
+
+    if suffix is None:
+        suffix = Config.RESULTS_SUFFIX.get(tool)
+
     if tool == "STAR":
-        cmds_star = Results(input_dir=input_dir,
-                            output_dir=output_dir,
-                            project_name=project_name).star()
+        cmds_star = result.star()
         RunCmds(cmds=cmds_star, silent=silent).running(1)
     elif tool == "RSEM":
-        cmds_rsem = Results(input_dir=input_dir,
-                            output_dir=output_dir,
-                            project_name=project_name).rsem()
+        cmds_rsem = result.rsem()
         RunCmds(cmds=cmds_rsem, silent=silent).running(1)
     elif tool == "infer_expr":
-        suffix = Config.RESULTS_SUFFIX["infer_expr"]
-        cmds_infer = Results(input_dir=input_dir,
-                             output_dir=output_dir,
-                             project_name=project_name).infer_expr(suffix)
+        cmds_infer = result.infer_expr(suffix)
         RunCmds(cmds=cmds_infer, silent=silent).running(1)
     elif tool == "CollectRnaSeqMetrics":
-        suffix = Config.RESULTS_SUFFIX["CollectRnaSeqMetrics"]
-        cmds_metrics = Results(input_dir=input_dir,
-                               output_dir=output_dir,
-                               project_name=project_name).RNAmetrics(suffix)
+        cmds_metrics = result.RNAmetrics(suffix)
         RunCmds(cmds=cmds_metrics, silent=silent).running(1)
     elif tool == "geneBody_coverage":
-        suffix = Config.RESULTS_SUFFIX["geneBody_coverage"]
-        cmds_genebody = Results(input_dir=input_dir,
-                                output_dir=output_dir,
-                                project_name=project_name).geneBody(suffix)
+        cmds_genebody = result.geneBody(suffix)
         RunCmds(cmds=cmds_genebody, silent=silent).running(1)
     else:
         print("Not ready!")
@@ -833,13 +850,13 @@ def results(
 def main():
     u"""
     Welcome to Lizdʻs RNAseq studio! Here we can perform Analysis below: \n
-        fastqc: FastQC\n
-        trim: Trimming\n
-        align: Alignments\n
-        bamqc: bam QC\n
-        quant: Quantification\n
-        count: Reads counting\n
-        results: Summarization or Plotting\n
+        01 fastqc: FastQC\n
+        02 trim: Trimming\n
+        03 align: Alignments\n
+        04 bamqc: bam QC\n
+        05 quant: Quantification\n
+        06 count: Reads counting\n
+        07 results: Summarization or Plotting\n
     \n
                                                             Li zhidan, 2019.12
     """

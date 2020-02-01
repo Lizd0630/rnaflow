@@ -3,5 +3,6 @@
     "--calc-pme": "",
     "--calc-ci": "",
     "-p": "8",
-    "-q": ""
+    "--no-bam-output": "",
+    "--quiet": ""
 }

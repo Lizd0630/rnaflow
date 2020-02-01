@@ -52,14 +52,14 @@ if (is.null(opts$indir)) {
     stop("-o --project_name not set")
 }
 
-
 geneMerge <- function(path, 
                       type = "expected_count"){
-  filenames <- sort(list.files(path=path, pattern="genes.results", full.names=TRUE))
-  datalist <- lapply(filenames, function(x){
+  files <- sort(list.files(path=path, pattern="genes.results$", full.names=TRUE))
+  # filenames <- sub("[^0-9a-zA-Z].*genes.results$", "", basename(files))
+  datalist <- lapply(files, function(x){
     tmp <- fread(x, header=TRUE, sep = "\t")
     tmp <- tmp[, c("gene_id", type), with=F]
-    samplename <- sub("[\\._]*genes.results$", "", tail(strsplit(x,"/")[[1]], n=1))
+    samplename <- sub("[\\._]*genes.results$", "", basename(x))
     setnames(tmp, type, samplename)
     setkey(tmp, gene_id)
     return(tmp)})
@@ -68,14 +68,14 @@ geneMerge <- function(path,
   fwrite(all, file = outname, sep = "\t")
 }
 
-
 isoMerge <- function(path, 
                      type = "expected_count"){
-  filenames <- sort(list.files(path=path, pattern="isoforms.results", full.names=TRUE))
-  datalist <- lapply(filenames, function(x){
+  files <- sort(list.files(path=path, pattern="isoforms.results$", full.names=TRUE))
+  # filenames <- sub("[^0-9a-zA-Z].*isoforms.results$", "", basename(files))
+  datalist <- lapply(files, function(x){
     tmp <- fread(x, header=TRUE, sep = "\t")
     tmp <- tmp[, c("transcript_id", "gene_id", type), with=F]
-    samplename <- sub("[\\._]*isoforms.results$", "", tail(strsplit(x,"/")[[1]], n=1))
+    samplename <- sub("[\\._]*isoforms.results$", "", basename(x))
     setnames(tmp, type, samplename)
     setkey(tmp, transcript_id)
     return(tmp)})
@@ -84,7 +84,6 @@ isoMerge <- function(path,
   fwrite(all, file = outname, sep = "\t")
 }
 
-
 geneMerge(opts$indir, type = "expected_count")
 geneMerge(opts$indir, type = "TPM")
 geneMerge(opts$indir, type = "FPKM")
@@ -92,4 +91,3 @@ geneMerge(opts$indir, type = "FPKM")
 isoMerge(opts$indir, type = "expected_count")
 isoMerge(opts$indir, type = "TPM")
 isoMerge(opts$indir, type = "FPKM")
-

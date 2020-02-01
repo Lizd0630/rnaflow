@@ -58,7 +58,7 @@ if (is.null(opts$indir)) {
 
 multiMerge <- function(path,
                        pattern) {
-    files <- file.path(path, list.files(path, pattern = pattern, recursive = TRUE))
+    files <- file.path(path, list.files(path, pattern = paste0(pattern, "$"), recursive = TRUE))
     fileList <- lapply(files, function(x) {tail(readLines(x), 4)})
     names(fileList) <- sub(paste0("[^0-9a-zA-Z]*", pattern, "$"), "", basename(files))
     fileList <- do.call(rbind, fileList)
@@ -89,4 +89,8 @@ multiMerge <- function(path,
 
 res <- multiMerge(opts$indir, opts$suffix)
 
-write.table(res, file = file.path(opts$outdir, paste0(opts$project_name, "_inferExpr.tsv")), sep = "\t", row.names = FALSE, quote = FALSE)
+write.table(res,
+            file = file.path(opts$outdir, paste0(opts$project_name, "_inferExpr.tsv")),
+            sep = "\t",
+            row.names = FALSE,
+            quote = FALSE)

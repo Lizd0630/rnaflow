@@ -88,7 +88,7 @@ merge_files <- function(files) {
     return(list(read_dist = read_dist, read_cover = read_cover))
 }
 
-files <- list.files(opts$indir, pattern = opts$suffix, full.names = TRUE)
+files <- list.files(opts$indir, pattern = paste0(opts$suffix, "$"), full.names = TRUE)
 
 reads <- merge_files(files)
 
@@ -111,7 +111,7 @@ read_dist$Feature <- factor(read_dist$Feature,
 height <- ceiling(length(files)/5)
 height <- ifelse(height <= 4, 4, height)
 
-pdf(paste0(opts$project_name, "_Picard_RNAmetrics.pdf"), width = 6, height = height)
+pdf(paste0(opts$project_name, "_Picard_RNAmetrics.pdf"), width = 8, height = height)
 ggplot(read_dist, aes(x = Run, y = value, fill = Feature)) + 
     geom_bar(stat = "identity", position = "fill") + 
     geom_abline(slope = 0, intercept = c(0.25,0.50,0.75), color = "red") + 
@@ -126,12 +126,13 @@ ggplot(read_dist, aes(x = Run, y = value, fill = Feature)) +
 dev.off()
 
 
-width <- floor(length(files)/20) + 8
 # ---------------------------------------------------------------------------- #
 read_cover <- melt(reads$read_cover, id.vars = c('Pos'))
 colnames(read_cover)[2] <- "Run"
 
-pdf(paste0(opts$project_name, "_Picard_geneCover.pdf"), width = width, height = 6)
+height <- floor(length(files)/20) + 8
+
+pdf(paste0(opts$project_name, "_Picard_geneCover.pdf"), width = 8, height = height)
 ggplot(read_cover, aes(x = Pos, y = value, color = Run)) + 
     geom_line() + 
     theme_bw() + 
@@ -139,6 +140,7 @@ ggplot(read_cover, aes(x = Pos, y = value, color = Run)) +
           axis.text = element_text(size = 6,face = "bold"), 
           plot.title = element_text(hjust = 0.5, size = 12,face = "bold"), 
           axis.text.x=element_text(angle=45,hjust=1, vjust=1),
-          legend.text = element_text(size=6, face="bold")) + 
+          legend.text = element_text(size=6, face="bold"),
+          legend.position = "bottom") + 
     labs(title = "Gene coverage(Picard)", x = "Gene body percentile (5'->3')", y = "")
 dev.off()

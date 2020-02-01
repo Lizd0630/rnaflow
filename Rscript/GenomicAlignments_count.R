@@ -131,7 +131,9 @@ merge_se <- function(x, y) {
         y_cnt <- assay(y)
         x_coldata <- colData(x)
         y_coldata <- colData(y)
-        se <- SummarizedExperiment(assays = SimpleList(counts = cbind(x_cnt, y_cnt)), rowRanges = rowranges, colData = rbind(x_coldata, y_coldata))
+        se <- SummarizedExperiment(assays = SimpleList(counts = cbind(x_cnt, y_cnt)), 
+                                   rowRanges = rowranges, 
+                                   colData = rbind(x_coldata, y_coldata))
     } else if (!is.null(x)) {
         se <- x
     } else if (!is.null(y)) {
@@ -144,7 +146,6 @@ merge_se <- function(x, y) {
 
 flag <- scanBamFlag(isSecondaryAlignment = FALSE,
                     isNotPassingQualityControls = FALSE,
-                    isDuplicate = FALSE,
                     isUnmappedQuery = FALSE)
 sbp <- ScanBamParam(flag=flag, mapqFilter = 255)
 
@@ -179,6 +180,10 @@ if (TRUE) {
     options(mc.cores=opts$num_threads)
 }
 
+#########
+## in summarizeOverlaps, ignore.strand has higher priority than strandMode
+#########
+
 if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   ## single end & non strand-specific samples
@@ -193,11 +198,9 @@ if (opts$counts_type == "gene") {
     SE_0_geneCnt <- summarizeOverlaps(features = ebg,
                                       mode = "Union",
                                       reads = SE_0_bamlist,
-                                      ignore.strand = FALSE,
+                                      ignore.strand = TRUE,
                                       inter.feature = FALSE,
                                       singleEnd = TRUE,
-                                      fragments = FALSE,
-                                      strandMode = 0,
                                       param = sbp,
                                       preprocess.reads = NULL)
     colnames(SE_0_geneCnt) <- SE_0_id
@@ -220,8 +223,6 @@ if (opts$counts_type == "gene") {
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
                                       singleEnd = TRUE,
-                                      fragments = FALSE,
-                                      strandMode = 1,
                                       param = sbp,
                                       preprocess.reads = NULL)
     colnames(SE_1_geneCnt) <- SE_1_id
@@ -244,10 +245,8 @@ if (opts$counts_type == "gene") {
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
                                       singleEnd = TRUE,
-                                      fragments = FALSE,
-                                      strandMode = 2,
                                       param = sbp,
-                                      preprocess.reads = NULL)
+                                      preprocess.reads = invertStrand)
     colnames(SE_2_geneCnt) <- SE_2_id
     colData(SE_2_geneCnt) <- files$sampleTable
   } else {
@@ -346,11 +345,9 @@ if (opts$counts_type == "gene") {
     SE_0_exonCnt <- summarizeOverlaps(features = ep,
                                       mode = "IntersectionStrict",
                                       reads = SE_0_bamlist,
-                                      ignore.strand = FALSE,
+                                      ignore.strand = TRUE,
                                       inter.feature = FALSE,
                                       singleEnd = TRUE,
-                                      fragments = FALSE,
-                                      strandMode = 0,
                                       param = sbp,
                                       preprocess.reads = NULL)
     colnames(SE_0_exonCnt) <- SE_0_id
@@ -373,8 +370,6 @@ if (opts$counts_type == "gene") {
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
                                       singleEnd = TRUE,
-                                      fragments = FALSE,
-                                      strandMode = 1,
                                       param = sbp,
                                       preprocess.reads = NULL)
     colnames(SE_1_exonCnt) <- SE_1_id
@@ -397,10 +392,8 @@ if (opts$counts_type == "gene") {
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
                                       singleEnd = TRUE,
-                                      fragments = FALSE,
-                                      strandMode = 2,
                                       param = sbp,
-                                      preprocess.reads = NULL)
+                                      preprocess.reads = invertStrand)
     colnames(SE_2_exonCnt) <- SE_2_id
     colData(SE_2_exonCnt) <- files$sampleTable
   } else {
