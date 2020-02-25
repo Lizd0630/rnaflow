@@ -155,13 +155,11 @@ gzip
 2. RSEM index version: v1.3.1
 ```bash
 rsem-prepare-reference --gtf chr22.gtf chr22.fa ./RSEM/chr22
-
-STAR   --runMode genomeGenerate \
-       --runThreadN 8 \
-       --genomeDir ./ \
-       --genomeFastaFiles ../chr22.fa \
-       --sjdbGTFfile ../chr22.gtf
-
+STAR --runMode genomeGenerate \
+    --runThreadN 8 \
+    --genomeDir ./ \
+    --genomeFastaFiles ../chr22.fa \
+    --sjdbGTFfile ../chr22.gtf
 bash gtf_2_genePred_refFlat_bed12.bash -i chr22.gtf ./
 ```
 
