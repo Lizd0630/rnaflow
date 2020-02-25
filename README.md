@@ -1,11 +1,6 @@
 ## RNA-seq pipeline
 #### lizhidan, lzd_hunan@126.com
-##### Before using this workflow, you should have basic coneption about RNAseq, like: 
-- RNA sequencing technologies
-- strand specificity in RNAseq library
-- Quality control about RNAseq
-- Counts and differential analysis
-- etc.
+rnaflow cover basic steps of RNAseq analyses, but differential analysis do not included.
 
 ## For what?
 1. fastqc - FastQC: FastQC, multiqc
@@ -16,11 +11,17 @@
 6. count - Reads counting: GenomicAlignments
 7. results - Summarization and plotting
 
+#### Before using this workflow, you should have basic coneption about RNAseq, like: 
+- RNA sequencing technologies
+- strand specificity in RNAseq library
+- Quality control about RNAseq
+- Counts and differential analysis
+- etc.
 
 ## Basic ideas
 ### Package dependency
 - python3: pandas, click, multiqc, RSeQC
-- R packages: optparse, GenomicAlignments, ggplot2
+- R packages: optparse, GenomicAlignments, GenomicFeatures, ggplot2
 - other softwares: FastQC, fastp(0.20.0), Trimmomatic, STAR, picard, RSEM, gtfToGenePred, genePredToBed
 
 ### Basic pipe
@@ -32,11 +33,17 @@
 ### File dependency
 1. JSON file contains path to softwares be used (dictionary), which should be modified in different environment. [softwares.json](./config/softwares.json)
 2. JSON file contains parameters used in software, except for I/O files which will be determinated by metafile (dictionary, leave null if parameter has no values), which should be modified for different version. For STAR2.7.1a, [STAR_align.json](./config/STAR_align.json)
-3. Meta information, tsv file(Table seperated file) contain at least 5 columns: Run, R1, R2, Layout, strand_specificity.
+3. Meta information, tsv file(Table seperated file) contain at least 5 columns: 
+- Run: prefix of sample name, like alignment output, bamQC, etc. 
+- R1: prefix of reads 1 fastq file (raw/clean)
+- R2: prefix of reads 2 fastq file, leave NULL if PAIRED (raw/clean)
+- Layout: SINGLE/PAIRED
+- Strand_specificity: unstranded/fr-firststrand/fr-secondstrand
 
 ## Notes
 ### Software parameter JSON file
 #### Input, output, strandness, reference, log file, prefix, suffix, etc, should not in JSON files.
+#### Exact performed commands will be recorded in output directory.
 #### For details,
 0. All input/output files will be parsed from meta file, you just only offer --project_name as prefix or not.
 1. Trimmomatic: adapter will be parsed via softpath(Do not support Illumina GA series; Modified Trim Class if you have to)
@@ -187,7 +194,7 @@ python3 path/to/main.py quant -i align/ -o RSEM/ -m meta/meta.tsv -n 4 --ref ref
 ## merge TPM
 python3 path/to/main.py results -t RSEM -i RSEM/ -o summary/ --project_name exam
 ```
-### 06 count
+### 06 reads counting
 ```bash
 python3 path/to/main.py count -i align/ -o counts/ -m meta/meta.tsv -n 4 --ref ref/chr22.gtf -c gene --project_name exam
 ```
@@ -197,8 +204,8 @@ python3 path/to/main.py count -i align/ -o counts/ -m meta/meta.tsv -n 4 --ref r
 
 ## To Do
 1. remove duplicates and multi-mapped reads
-2. Check commands finished in order not do it again.
-3. Error: parameter with suffix file exist?
+2. Check commands finished or not, in order to not do it again.
+3. Error: suffix file exist?
 
 
 
