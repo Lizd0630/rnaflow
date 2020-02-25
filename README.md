@@ -55,21 +55,22 @@ flag <- scanBamFlag(isSecondaryAlignment = FALSE,
                     isNotPassingQualityControls = FALSE,
                     isUnmappedQuery = FALSE)
 sbp <- ScanBamParam(flag=flag, mapqFilter = 255)
-
-### exonic reads counting using mode "IntersectionStrict"
-### Using strand-specific if they are
-### for single end, unstranded library
+```
+##### for single end, unstranded library
+```r
 summarizeOverlaps(features = ebg,
-                  mode = "Union",
+                  mode = "Union", # exonic reads counting using mode "IntersectionStrict"
                   reads = SE_0_bamlist,
                   ignore.strand = TRUE, ## can be change according to strand-specificity
                   inter.feature = FALSE,
                   singleEnd = TRUE,
                   param = sbp,
                   preprocess.reads = NULL) ## can be change according to strand-specificity
-### for paired end, unstranded library
+```
+##### for paired end, unstranded library
+```r
 summarizeOverlaps(features = ebg,
-                  mode = "Union",
+                  mode = "Union", # exonic reads counting using mode "IntersectionStrict"
                   reads = PE_0_bamlist,
                   ignore.strand = FALSE,
                   inter.feature = FALSE,
