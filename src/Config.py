@@ -7,7 +7,7 @@ import pathlib as pl
 
 # ENV
 __dir__ = str(pl.Path(__file__).resolve().parents[1])
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 LABEL = "RNA seq pipeline"
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 READ1 = r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz"

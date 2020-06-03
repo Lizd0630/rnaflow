@@ -784,7 +784,7 @@ def count(
 @click.option(
     "--suffix",
     type=str,
-    help="Suffix of individual files of samples.",
+    help="Suffix of individual files to be processed.",
 )
 @click.option(
     "--project_name",

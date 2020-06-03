@@ -53,12 +53,14 @@ opt_list <- list(
         )
 )
 
-opts <- parse_args(OptionParser(option_list = opt_list, 
-                                usage = "usage: %prog [options]", 
-                                add_help_option = TRUE, 
-                                prog = "", 
-                                description = "Summary CollectRnaMetrics output files and plot it.")
-                   )
+opts <- parse_args(
+    OptionParser(
+        option_list = opt_list, 
+        usage = "usage: %prog [options]", 
+        add_help_option = TRUE, 
+        prog = "", 
+        description = "Summary CollectRnaMetrics output files and plot it.")
+        )
 
 if (is.null(opts$indir)) {
     stop("-i --indir not set")
@@ -104,8 +106,9 @@ read_dist$NON_ALIGNED_BASES <- read_dist$PF_BASES - read_dist$PF_ALIGNED_BASES
 read_dist <- read_dist[, c('Run', features)]
 read_dist <- melt(read_dist, id.vars = c('Run'))
 colnames(read_dist)[2] <- "Feature"
-read_dist$Feature <- factor(read_dist$Feature, 
-                            levels = rev(c("CODING_BASES", "UTR_BASES", "INTRONIC_BASES", "INTERGENIC_BASES", "NON_ALIGNED_BASES")))
+read_dist$Feature <- factor(
+    read_dist$Feature, 
+    levels = rev(c("CODING_BASES", "UTR_BASES", "INTRONIC_BASES", "INTERGENIC_BASES", "NON_ALIGNED_BASES")))
 
 
 height <- ceiling(length(files)/5)

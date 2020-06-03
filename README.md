@@ -59,24 +59,24 @@ sbp <- ScanBamParam(flag=flag, mapqFilter = 255)
 ##### for single end, unstranded library
 ```r
 summarizeOverlaps(features = ebg,
-                  mode = "Union", # exonic reads counting using mode "IntersectionStrict"
+                  mode = "Union", # exonic reads counting use mode "IntersectionStrict"
                   reads = SE_0_bamlist,
-                  ignore.strand = TRUE, ## can be change according to strand-specificity
+                  ignore.strand = TRUE, ## can be changed according to strand-specificity
                   inter.feature = FALSE,
                   singleEnd = TRUE,
                   param = sbp,
-                  preprocess.reads = NULL) ## can be change according to strand-specificity
+                  preprocess.reads = NULL) ## can be changed according to strand-specificity
 ```
 ##### for paired end, unstranded library
 ```r
 summarizeOverlaps(features = ebg,
-                  mode = "Union", # exonic reads counting using mode "IntersectionStrict"
+                  mode = "Union", # exonic reads counting use mode "IntersectionStrict"
                   reads = PE_0_bamlist,
                   ignore.strand = FALSE,
                   inter.feature = FALSE,
                   singleEnd = FALSE,
                   fragments = FALSE,
-                  strandMode = 0, ## can be change according to strand-specificity
+                  strandMode = 0, ## can be changed according to strand-specificity
                   param = sbp,
                   preprocess.reads = NULL)
 ```
@@ -215,4 +215,9 @@ python3 path/to/main.py count -i align/ -o counts/ -m meta/meta.tsv -n 4 --ref r
 ### Data manipulation tips
 http://bioconductor.jp/packages/3.6/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesHOWTOs.pdf
 
-
+### follow
+http://www.nathalievialaneix.eu/doc/html/TP1_normalization.html#edger
+https://github.com/griffithlab/rnaseq_tutorial
+https://qiubio.com/new/book/
+https://bioconductor.org/packages/release/workflows/vignettes/RNAseq123/inst/doc/limmaWorkflow_CHN.html
+https://www.bioinfo-scrounger.com/

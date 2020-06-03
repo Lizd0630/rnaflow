@@ -77,12 +77,14 @@ opt_list <- list(
         )
 )
 
-opts <- parse_args(OptionParser(option_list = opt_list,
-                                usage = "usage: %prog [options]",
-                                add_help_option = TRUE,
-                                prog = "GenomicAlimenstsQuant",
-                                description = "The Rscript to quantification gene and exon counts. Reads for SINGLE end, Fragments for PAIRED end.")
-                    )
+opts <- parse_args(
+  OptionParser(
+    option_list = opt_list,
+    usage = "usage: %prog [options]",
+    add_help_option = TRUE,
+    prog = "GenomicAlimenstsQuant",
+    description = "The Rscript to quantification gene and exon counts. Reads for SINGLE end, Fragments for PAIRED end.")
+  )
 
 if (is.null(opts$in_dir)) {
     stop("-i --in_dir not set")
@@ -125,23 +127,24 @@ filterfiles <- function(meta, ids, path, bamfiles) {
 }
 
 merge_se <- function(x, y) {
-    if (!is.null(x) & !is.null(y)) {
-        rowranges <- rowRanges(x)
-        x_cnt <- assay(x)
-        y_cnt <- assay(y)
-        x_coldata <- colData(x)
-        y_coldata <- colData(y)
-        se <- SummarizedExperiment(assays = SimpleList(counts = cbind(x_cnt, y_cnt)), 
-                                   rowRanges = rowranges, 
-                                   colData = rbind(x_coldata, y_coldata))
-    } else if (!is.null(x)) {
-        se <- x
-    } else if (!is.null(y)) {
-        se <- y
-    } else {
-        se <- NULL
-    }
-    return(se)
+  if (!is.null(x) & !is.null(y)) {
+    rowranges <- rowRanges(x)
+    x_cnt <- assay(x)
+    y_cnt <- assay(y)
+    x_coldata <- colData(x)
+    y_coldata <- colData(y)
+    se <- SummarizedExperiment(
+      assays = SimpleList(counts = cbind(x_cnt, y_cnt)), 
+      rowRanges = rowranges, 
+      colData = rbind(x_coldata, y_coldata))
+  } else if (!is.null(x)) {
+      se <- x
+  } else if (!is.null(y)) {
+      se <- y
+  } else {
+      se <- NULL
+  }
+  return(se)
 }
 
 flag <- scanBamFlag(isSecondaryAlignment = FALSE,
@@ -165,10 +168,11 @@ if (all(c("Run", "R1", "R2", "Layout", "Strand_specificity") %in% colnames(meta)
 }
 
 refpath <- file.path(opts$ref)
-txdb <- makeTxDbFromGFF(refpath,
-                        format = tolower(opts$reftype),
-                        dataSource = basename(opts$ref)
-                        )
+txdb <- makeTxDbFromGFF(
+  refpath,
+  format = tolower(opts$reftype),
+  dataSource = basename(opts$ref)
+  )
 
 ebg <- exonsBy(txdb, by="gene")
 #-----------------------------------------------------------------------------#

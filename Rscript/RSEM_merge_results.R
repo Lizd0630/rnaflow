@@ -37,7 +37,8 @@ opt_list <- list(
         )
 )
 
-opts <- parse_args(OptionParser(
+opts <- parse_args(
+  OptionParser(
     option_list = opt_list, 
     usage = "usage: %prog [options]", 
     add_help_option = TRUE, 

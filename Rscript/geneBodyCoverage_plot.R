@@ -53,12 +53,13 @@ opt_list <- list(
         )
 )
 
-opts <- parse_args(OptionParser(option_list = opt_list, 
-                                usage = "usage: %prog [options]", 
-                                add_help_option = TRUE, 
-                                prog = "", 
-                                description = "Summary CollectRnaMetrics output files and plot it.")
-                   )
+opts <- parse_args(
+    OptionParser(option_list = opt_list, 
+    usage = "usage: %prog [options]", 
+    add_help_option = TRUE, 
+    prog = "", 
+    description = "Summary CollectRnaMetrics output files and plot it.")
+    )
 
 if (is.null(opts$indir)) {
     stop("-i --indir not set")
