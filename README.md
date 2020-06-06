@@ -38,7 +38,7 @@ rnaflow cover basic steps of RNAseq analyses, but differential analysis do not i
 - R1: prefix of reads 1 fastq file (raw/clean)
 - R2: prefix of reads 2 fastq file, leave NULL if PAIRED (raw/clean)
 - Layout: SINGLE/PAIRED
-- Strand_specificity: unstranded/fr-firststrand/fr-secondstrand
+- Strand_specificity: fr-unstranded/fr-firststrand/fr-secondstrand
 
 ## Notes
 ### Software parameter JSON file
@@ -221,3 +221,4 @@ https://github.com/griffithlab/rnaseq_tutorial
 https://qiubio.com/new/book/
 https://bioconductor.org/packages/release/workflows/vignettes/RNAseq123/inst/doc/limmaWorkflow_CHN.html
 https://www.bioinfo-scrounger.com/
+https://github.com/hbctraining/DGE_workshop
