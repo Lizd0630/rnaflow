@@ -31,12 +31,12 @@ rnaflow cover basic steps of RNAseq analyses, but differential analysis do not i
 4. Launch commands(parallel)
 
 ### File dependency
-1. JSON file contains path to softwares be used (dictionary), which should be modified in different environment. [softwares.json](./config/softwares.json)
+1. JSON file contains path to softwares be used (dictionary), which should be modified in different environment. Software key should be the same as [softwares.json](./config/softwares.json)
 2. JSON file contains parameters used in software, except for I/O files which will be determinated by metafile (dictionary, leave null if parameter has no values), which should be modified for different version. For STAR2.7.1a, [STAR_align.json](./config/STAR_align.json)
 3. Meta information, tsv file(Table seperated file) contain at least 5 columns: 
 - Run: prefix of sample name, like alignment output, bamQC, etc. 
-- R1: prefix of reads 1 fastq file (raw/clean)
-- R2: prefix of reads 2 fastq file, leave NULL if PAIRED (raw/clean)
+- R1: prefix of reads 1 fastq file, exclude "_1.fq.gz", "_1.fastq.gz", "_R1.fq.gz" etc. (raw/clean)
+- R2: prefix of reads 2 fastq file, rule as R1, leave NULL if SINGLE. (raw/clean)
 - Layout: SINGLE/PAIRED
 - Strand_specificity: fr-unstranded/fr-firststrand/fr-secondstrand
 
