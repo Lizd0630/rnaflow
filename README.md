@@ -51,15 +51,25 @@ rnaflow cover basic steps of RNAseq analyses, but differential analysis do not i
 3. RSEM quantification: --strandness, --paired-end will be parsed from meta info, RSEM index be specified via command --ref
 4. GenomicAlignments count:
 ```r
+txdb <- makeTxDbFromGFF(
+  refpath,
+  format = reftype,
+  dataSource = basename(refpath)
+  )
+ebg <- exonsBy(txdb, by="gene")
+ep <- exonicParts(txdb, linked.to.single.gene.only=FALSE)
+exon <- exons(txdb, use.names = TRUE)
+
 flag <- scanBamFlag(isSecondaryAlignment = FALSE,
                     isNotPassingQualityControls = FALSE,
                     isUnmappedQuery = FALSE)
 sbp <- ScanBamParam(flag=flag, mapqFilter = 255)
+ep <- 
 ```
 ##### for single end, unstranded library
 ```r
 summarizeOverlaps(features = ebg,
-                  mode = "Union", # exonic reads counting use mode "IntersectionStrict"
+                  mode = "Union", # exonicparts/exon reads counting use mode "Union"
                   reads = SE_0_bamlist,
                   ignore.strand = TRUE, ## can be changed according to strand-specificity
                   inter.feature = FALSE,
@@ -70,7 +80,7 @@ summarizeOverlaps(features = ebg,
 ##### for paired end, unstranded library
 ```r
 summarizeOverlaps(features = ebg,
-                  mode = "Union", # exonic reads counting use mode "IntersectionStrict"
+                  mode = "Union", # exonicparts/exon reads counting use mode "Union"
                   reads = PE_0_bamlist,
                   ignore.strand = FALSE,
                   inter.feature = FALSE,
@@ -211,6 +221,9 @@ python3 path/to/main.py count -i align/ -o counts/ -m meta/meta.tsv -n 4 --ref r
 
 
 ## Learning
+
+### R
+https://bookdown.org/xiao/RAnalysisBook/
 
 ### Data manipulation tips
 http://bioconductor.jp/packages/3.6/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesHOWTOs.pdf

@@ -335,7 +335,7 @@ if (opts$counts_type == "gene") {
 
   saveRDS(gene_se, file = file.path(opts$out_dir,paste0(opts$project_name,".GeneCnt.Rds")))
 
-} else if (opts$counts_type == "exon") {
+} else if (opts$counts_type == "exonBin") {
   ep <- exonicParts(txdb, linked.to.single.gene.only=FALSE)
   #-----------------------------------------------------------------------------#
   ## single end & non strand-specific samples
@@ -346,8 +346,156 @@ if (opts$counts_type == "gene") {
     files <- filterfiles(meta, SE_0_id, opts$in_dir, bamfiles)
     SE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
     ## exon reads count
-    SE_0_exonCnt <- summarizeOverlaps(features = ep,
-                                      mode = "IntersectionStrict",
+    SE_0_exonBinCnt <- summarizeOverlaps(features = ep,
+                                      mode = "Union",
+                                      reads = SE_0_bamlist,
+                                      ignore.strand = TRUE,
+                                      inter.feature = FALSE,
+                                      singleEnd = TRUE,
+                                      param = sbp,
+                                      preprocess.reads = NULL)
+    colnames(SE_0_exonBinCnt) <- SE_0_id
+    colData(SE_0_exonBinCnt) <- files$sampleTable
+  } else {
+    SE_0_exonBinCnt <- NULL
+  }
+  #-----------------------------------------------------------------------------#
+  ## single end & fr-secondstrand samples
+  #-----------------------------------------------------------------------------#
+  SE_1_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-secondstrand")$Run
+
+  if (length(SE_1_id) > 0){
+    files <- filterfiles(meta, SE_1_id, opts$in_dir, bamfiles)
+    SE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
+    ## exon reads count
+    SE_1_exonBinCnt <- summarizeOverlaps(features = ep,
+                                      mode = "Union",
+                                      reads = SE_1_bamlist,
+                                      ignore.strand = FALSE,
+                                      inter.feature = FALSE,
+                                      singleEnd = TRUE,
+                                      param = sbp,
+                                      preprocess.reads = NULL)
+    colnames(SE_1_exonBinCnt) <- SE_1_id
+    colData(SE_1_exonBinCnt) <- files$sampleTable
+  } else {
+    SE_1_exonBinCnt <- NULL
+  }
+  #-----------------------------------------------------------------------------#
+  ## single end & fr-firststrand samples
+  #-----------------------------------------------------------------------------#
+  SE_2_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-firststrand")$Run
+
+  if (length(SE_2_id) > 0){
+    files <- filterfiles(meta, SE_2_id, opts$in_dir, bamfiles)
+    SE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
+    ## exon reads count
+    SE_2_exonBinCnt <- summarizeOverlaps(features = ep,
+                                      mode = "Union",
+                                      reads = SE_2_bamlist,
+                                      ignore.strand = FALSE,
+                                      inter.feature = FALSE,
+                                      singleEnd = TRUE,
+                                      param = sbp,
+                                      preprocess.reads = invertStrand)
+    colnames(SE_2_exonBinCnt) <- SE_2_id
+    colData(SE_2_exonBinCnt) <- files$sampleTable
+  } else {
+    SE_2_exonBinCnt <- NULL
+  }
+  #-----------------------------------------------------------------------------#
+  ## PAIRED end & non strand-specific samples
+  #-----------------------------------------------------------------------------#
+  PE_0_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-unstranded")$Run
+
+  if (length(PE_0_id) > 0){
+    files <- filterfiles(meta, PE_0_id, opts$in_dir, bamfiles)
+    PE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
+    ## exon reads count
+    PE_0_exonBinCnt <- summarizeOverlaps(features = ep,
+                                      mode = "Union",
+                                      reads = PE_0_bamlist,
+                                      ignore.strand = FALSE,
+                                      inter.feature = FALSE,
+                                      singleEnd = FALSE,
+                                      fragments = FALSE,
+                                      strandMode = 0,
+                                      param = sbp,
+                                      preprocess.reads = NULL)
+    colnames(PE_0_exonBinCnt) <- PE_0_id
+    colData(PE_0_exonBinCnt) <- files$sampleTable
+  } else {
+    PE_0_exonBinCnt <- NULL
+  }
+  #-----------------------------------------------------------------------------#
+  ## paired end & fr-secondstrand samples
+  #-----------------------------------------------------------------------------#
+  PE_1_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-secondstrand")$Run
+
+  if (length(PE_1_id) > 0){
+    files <- filterfiles(meta, PE_1_id, opts$in_dir, bamfiles)
+    PE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
+    ## exon reads count
+    PE_1_exonBinCnt <- summarizeOverlaps(features = ep,
+                                      mode = "Union",
+                                      reads = PE_1_bamlist,
+                                      ignore.strand = FALSE,
+                                      inter.feature = FALSE,
+                                      singleEnd = FALSE,
+                                      fragments = FALSE,
+                                      strandMode = 1,
+                                      param = sbp,
+                                      preprocess.reads = NULL)
+    colnames(PE_1_exonBinCnt) <- PE_1_id
+    colData(PE_1_exonBinCnt) <- files$sampleTable
+  } else {
+    PE_1_exonBinCnt <- NULL
+  }
+  #-----------------------------------------------------------------------------#
+  ## paired end & fr-firststrand samples
+  #-----------------------------------------------------------------------------#
+  PE_2_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-firststrand")$Run
+
+  if (length(PE_2_id) > 0){
+    files <- filterfiles(meta, PE_2_id, opts$in_dir, bamfiles)
+    PE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
+    ## exon reads count
+    PE_2_exonBinCnt <- summarizeOverlaps(features = ep,
+                                      mode = "Union",
+                                      reads = PE_2_bamlist,
+                                      ignore.strand = FALSE,
+                                      inter.feature = FALSE,
+                                      singleEnd = FALSE,
+                                      fragments = FALSE,
+                                      strandMode = 2,
+                                      param = sbp,
+                                      preprocess.reads = NULL)
+    colnames(PE_2_exonBinCnt) <- PE_2_id
+    colData(PE_2_exonBinCnt) <- files$sampleTable
+  } else {
+    PE_2_exonBinCnt <- NULL
+  }
+
+  se_exonBin <- merge_se(merge_se(SE_0_exonBinCnt, SE_1_exonBinCnt), SE_2_exonBinCnt)
+  pe_exonBin <- merge_se(merge_se(PE_0_exonBinCnt, PE_1_exonBinCnt), PE_2_exonBinCnt)
+  exonBin_se <- merge_se(se_exonBin, pe_exonBin)
+
+  saveRDS(exonBin_se, file = file.path(opts$out_dir,paste0(opts$project_name,".ExonBinCnt.Rds")))
+
+} else if (opts$counts_type == "exon") {
+  exon <- exons(txdb, use.names = TRUE)
+  #-----------------------------------------------------------------------------#
+  ## single end & non strand-specific samples
+  #-----------------------------------------------------------------------------#
+  SE_0_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-unstranded")$Run
+
+  if (length(SE_0_id) > 0){
+    files <- filterfiles(meta, SE_0_id, opts$in_dir, bamfiles)
+    SE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
+
+    ## gene reads count
+    SE_0_exonCnt <- summarizeOverlaps(features = exon,
+                                      mode = "Union",
                                       reads = SE_0_bamlist,
                                       ignore.strand = TRUE,
                                       inter.feature = FALSE,
@@ -367,9 +515,9 @@ if (opts$counts_type == "gene") {
   if (length(SE_1_id) > 0){
     files <- filterfiles(meta, SE_1_id, opts$in_dir, bamfiles)
     SE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
-    ## exon reads count
-    SE_1_exonCnt <- summarizeOverlaps(features = ep,
-                                      mode = "IntersectionStrict",
+
+    SE_1_exonCnt <- summarizeOverlaps(features = exon,
+                                      mode = "Union",
                                       reads = SE_1_bamlist,
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
@@ -377,7 +525,7 @@ if (opts$counts_type == "gene") {
                                       param = sbp,
                                       preprocess.reads = NULL)
     colnames(SE_1_exonCnt) <- SE_1_id
-    colData(SE_1_exonCnt) <- files$sampleTable
+      colData(SE_1_exonCnt) <- files$sampleTable
   } else {
     SE_1_exonCnt <- NULL
   }
@@ -389,9 +537,9 @@ if (opts$counts_type == "gene") {
   if (length(SE_2_id) > 0){
     files <- filterfiles(meta, SE_2_id, opts$in_dir, bamfiles)
     SE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
-    ## exon reads count
-    SE_2_exonCnt <- summarizeOverlaps(features = ep,
-                                      mode = "IntersectionStrict",
+
+    SE_2_exonCnt <- summarizeOverlaps(features = exon,
+                                      mode = "Union",
                                       reads = SE_2_bamlist,
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
@@ -411,9 +559,9 @@ if (opts$counts_type == "gene") {
   if (length(PE_0_id) > 0){
     files <- filterfiles(meta, PE_0_id, opts$in_dir, bamfiles)
     PE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
-    ## exon reads count
-    PE_0_exonCnt <- summarizeOverlaps(features = ep,
-                                      mode = "IntersectionStrict",
+
+    PE_0_exonCnt <- summarizeOverlaps(features = exon,
+                                      mode = "Union",
                                       reads = PE_0_bamlist,
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
@@ -435,9 +583,9 @@ if (opts$counts_type == "gene") {
   if (length(PE_1_id) > 0){
     files <- filterfiles(meta, PE_1_id, opts$in_dir, bamfiles)
     PE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
-    ## exon reads count
-    PE_1_exonCnt <- summarizeOverlaps(features = ep,
-                                      mode = "IntersectionStrict",
+
+    PE_1_exonCnt <- summarizeOverlaps(features = exon,
+                                      mode = "Union",
                                       reads = PE_1_bamlist,
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
@@ -459,9 +607,9 @@ if (opts$counts_type == "gene") {
   if (length(PE_2_id) > 0){
     files <- filterfiles(meta, PE_2_id, opts$in_dir, bamfiles)
     PE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
-    ## exon reads count
-    PE_2_exonCnt <- summarizeOverlaps(features = ep,
-                                      mode = "IntersectionStrict",
+
+    PE_2_exonCnt <- summarizeOverlaps(features = exon,
+                                      mode = "Union",
                                       reads = PE_2_bamlist,
                                       ignore.strand = FALSE,
                                       inter.feature = FALSE,
@@ -476,15 +624,13 @@ if (opts$counts_type == "gene") {
     PE_2_exonCnt <- NULL
   }
 
-  se.exon <- merge_se(merge_se(SE_0_exonCnt, SE_1_exonCnt), SE_2_exonCnt)
-  pe.exon <- merge_se(merge_se(PE_0_exonCnt, PE_1_exonCnt), PE_2_exonCnt)
-  exon_se <- merge_se(se.exon, pe.exon)
+  se_exon <- merge_se(merge_se(SE_0_exonCnt, SE_1_exonCnt), SE_2_exonCnt)
+  pe_exon <- merge_se(merge_se(PE_0_exonCnt, PE_1_exonCnt), PE_2_exonCnt)
+  exon_se <- merge_se(se_exon, pe_exon)
 
-  saveRDS(exon_se, file = file.path(opts$out_dir,paste0(opts$project_name,".ExonCnt.Rds")))
-
+  saveRDS(exon_se, file = file.path(opts$out_dir,paste0(opts$project_name,".exonCnt.Rds")))
 } else {
-  stop("Not ready!")
+  cat("Not ready!")
 }
-
 
 cat(date(), "all done!\n")

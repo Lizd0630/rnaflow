@@ -643,7 +643,7 @@ def quant(
     "--counts_type",
     default="gene",
     show_default=True,
-    type=click.Choice(["gene", "exon", "exonbin"]),
+    type=click.Choice(["gene", "exon", "exonBin"]),
     help="Counts type."
 )
 @click.option(
