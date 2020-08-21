@@ -38,7 +38,6 @@ BAMQC_CONFIG = pl.Path(__dir__, "config/bamqc.json")
 
 # bash, R scripts
 GA_SCRIPT = pl.Path(__dir__, "Rscript/GenomicAlignments_count.R")
-# STAR_STAT = pl.Path(__dir__, "Bash/STAR_stat.bash")
 STAR_STAT = pl.Path(__dir__, "py/StarStat.py")
 RSEM_MERGE = pl.Path(__dir__, "Rscript/RSEM_merge_results.R")
 INFEREXPR_MERGE = pl.Path(__dir__, "Rscript/inferExpr_merge.R")

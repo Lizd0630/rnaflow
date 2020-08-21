@@ -160,7 +160,7 @@ bamfiles <- list.files(path = file.path(opts$in_dir), pattern = paste0("*", opts
 cat(date(), "make genome features objects.\n")
 
 ## meta information table
-meta <- read.table(opts$meta_file, header=T, sep="\t", stringsAsFactors = FALSE)
+meta <- read.table(opts$meta_file, header=T, sep="\t", stringsAsFactors = FALSE, comment.char = "")
 if (all(c("Run", "R1", "R2", "Layout", "Strand_specificity") %in% colnames(meta))) {
     rownames(meta) <- meta$Run
 } else {
@@ -194,7 +194,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_0_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-unstranded")$Run
 
-  if (length(SE_0_id) > 0){
+  if (length(SE_0_id) > 0) {
     files <- filterfiles(meta, SE_0_id, opts$in_dir, bamfiles)
     SE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -217,7 +217,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_1_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-secondstrand")$Run
 
-  if (length(SE_1_id) > 0){
+  if (length(SE_1_id) > 0) {
     files <- filterfiles(meta, SE_1_id, opts$in_dir, bamfiles)
     SE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -239,7 +239,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_2_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-firststrand")$Run
 
-  if (length(SE_2_id) > 0){
+  if (length(SE_2_id) > 0) {
     files <- filterfiles(meta, SE_2_id, opts$in_dir, bamfiles)
     SE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -261,7 +261,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_0_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-unstranded")$Run
 
-  if (length(PE_0_id) > 0){
+  if (length(PE_0_id) > 0) {
     files <- filterfiles(meta, PE_0_id, opts$in_dir, bamfiles)
     PE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -285,7 +285,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_1_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-secondstrand")$Run
 
-  if (length(PE_1_id) > 0){
+  if (length(PE_1_id) > 0) {
     files <- filterfiles(meta, PE_1_id, opts$in_dir, bamfiles)
     PE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -309,7 +309,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_2_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-firststrand")$Run
 
-  if (length(PE_2_id) > 0){
+  if (length(PE_2_id) > 0) {
     files <- filterfiles(meta, PE_2_id, opts$in_dir, bamfiles)
     PE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -342,7 +342,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_0_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-unstranded")$Run
 
-  if (length(SE_0_id) > 0){
+  if (length(SE_0_id) > 0) {
     files <- filterfiles(meta, SE_0_id, opts$in_dir, bamfiles)
     SE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
     ## exon reads count
@@ -364,7 +364,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_1_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-secondstrand")$Run
 
-  if (length(SE_1_id) > 0){
+  if (length(SE_1_id) > 0) {
     files <- filterfiles(meta, SE_1_id, opts$in_dir, bamfiles)
     SE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
     ## exon reads count
@@ -386,7 +386,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_2_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-firststrand")$Run
 
-  if (length(SE_2_id) > 0){
+  if (length(SE_2_id) > 0) {
     files <- filterfiles(meta, SE_2_id, opts$in_dir, bamfiles)
     SE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
     ## exon reads count
@@ -408,7 +408,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_0_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-unstranded")$Run
 
-  if (length(PE_0_id) > 0){
+  if (length(PE_0_id) > 0) {
     files <- filterfiles(meta, PE_0_id, opts$in_dir, bamfiles)
     PE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
     ## exon reads count
@@ -432,7 +432,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_1_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-secondstrand")$Run
 
-  if (length(PE_1_id) > 0){
+  if (length(PE_1_id) > 0) {
     files <- filterfiles(meta, PE_1_id, opts$in_dir, bamfiles)
     PE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
     ## exon reads count
@@ -456,7 +456,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_2_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-firststrand")$Run
 
-  if (length(PE_2_id) > 0){
+  if (length(PE_2_id) > 0) {
     files <- filterfiles(meta, PE_2_id, opts$in_dir, bamfiles)
     PE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
     ## exon reads count
@@ -489,7 +489,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_0_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-unstranded")$Run
 
-  if (length(SE_0_id) > 0){
+  if (length(SE_0_id) > 0) {
     files <- filterfiles(meta, SE_0_id, opts$in_dir, bamfiles)
     SE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -512,7 +512,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_1_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-secondstrand")$Run
 
-  if (length(SE_1_id) > 0){
+  if (length(SE_1_id) > 0) {
     files <- filterfiles(meta, SE_1_id, opts$in_dir, bamfiles)
     SE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -534,7 +534,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   SE_2_id <- subset(meta, Layout=="SINGLE" & Strand_specificity == "fr-firststrand")$Run
 
-  if (length(SE_2_id) > 0){
+  if (length(SE_2_id) > 0) {
     files <- filterfiles(meta, SE_2_id, opts$in_dir, bamfiles)
     SE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -556,7 +556,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_0_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-unstranded")$Run
 
-  if (length(PE_0_id) > 0){
+  if (length(PE_0_id) > 0) {
     files <- filterfiles(meta, PE_0_id, opts$in_dir, bamfiles)
     PE_0_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -580,7 +580,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_1_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-secondstrand")$Run
 
-  if (length(PE_1_id) > 0){
+  if (length(PE_1_id) > 0) {
     files <- filterfiles(meta, PE_1_id, opts$in_dir, bamfiles)
     PE_1_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -604,7 +604,7 @@ if (opts$counts_type == "gene") {
   #-----------------------------------------------------------------------------#
   PE_2_id <- subset(meta, Layout=="PAIRED" & Strand_specificity == "fr-firststrand")$Run
 
-  if (length(PE_2_id) > 0){
+  if (length(PE_2_id) > 0) {
     files <- filterfiles(meta, PE_2_id, opts$in_dir, bamfiles)
     PE_2_bamlist <- BamFileList(files$bamfile,yieldSize=2000000)
 
@@ -628,7 +628,7 @@ if (opts$counts_type == "gene") {
   pe_exon <- merge_se(merge_se(PE_0_exonCnt, PE_1_exonCnt), PE_2_exonCnt)
   exon_se <- merge_se(se_exon, pe_exon)
 
-  saveRDS(exon_se, file = file.path(opts$out_dir,paste0(opts$project_name,".exonCnt.Rds")))
+  saveRDS(exon_se, file = file.path(opts$out_dir,paste0(opts$project_name,".ExonCnt.Rds")))
 } else {
   cat("Not ready!")
 }

@@ -49,8 +49,6 @@ class Align:
                             --readFilesIn {R1} {R2} \
                             --outFileNamePrefix {self.output_dir}{meta['run']}. \
                             2>&1 | tee {self.output_dir}{meta['run']}.STAR.log \
-                            && gzip {self.output_dir}{meta['run']}.Unmapped.out.mate1 \
-                            {self.output_dir}{meta['run']}.Unmapped.out.mate2 \
                             && {self.soft_path['samtools']} \
                             index {self.output_dir}{meta['run']}.Aligned.sortedByCoord.out.bam"
                     cmd = re.sub(" {2,}", " ", cmd)
@@ -70,7 +68,6 @@ class Align:
                             --readFilesIn {R1} \
                             --outFileNamePrefix {self.output_dir}{meta['run']}. \
                             2>&1 | tee {self.output_dir}{meta['run']}.STAR.log \
-                            && gzip {self.output_dir}{meta['run']}.Unmapped.out.mate1 \
                             && {self.soft_path['samtools']} \
                             index {self.output_dir}{meta['run']}.Aligned.sortedByCoord.out.bam"
                     cmd = re.sub(" {2,}", " ", cmd)

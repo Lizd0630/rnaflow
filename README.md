@@ -21,7 +21,7 @@ rnaflow cover basic steps of RNAseq analyses, but differential analysis do not i
 ## Basic ideas
 ### Package dependency
 - python3: pandas, click, multiqc, RSeQC
-- R packages: optparse, GenomicAlignments, GenomicFeatures, ggplot2
+- R packages: optparse, GenomicAlignments, GenomicFeatures, ggplot2, DEXseq
 - other softwares: FastQC, fastp(0.20.0), Trimmomatic, STAR, picard, RSEM, gtfToGenePred, genePredToBed
 
 ### Basic pipe
