@@ -30,8 +30,12 @@ class Meta:
             pass
         else:
             raise me.ValsError("'Strand_specificity' value error!")
-        return([{"run": run[i],
-                 "r1": r1[i],
-                 "r2": r2[i],
-                 "layout": layout[i],
-                 "strand": strand[i]} for i in self.meta_info.index])
+        return(
+            [{
+                "run": run[i],
+                "r1": r1[i],
+                "r2": r2[i],
+                "layout": layout[i],
+                "strand": strand[i]
+                } for i in self.meta_info.index
+                ])

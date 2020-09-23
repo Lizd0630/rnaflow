@@ -17,18 +17,21 @@ class colsError(MyError):
     def __init__(self, message):
         Exception.__init__(self)
         self.message = message
+        print(message)
 
 
 class ValsError(MyError):
     def __init__(self, message):
         Exception.__init__(self)
         self.message = message
+        print(message)
 
 
 class CntError(MyError):
     def __init__(self, message):
         Exception.__init__(self)
         self.message = message
+        print(message)
 
 
 # meta_info is a data.frame from pandas

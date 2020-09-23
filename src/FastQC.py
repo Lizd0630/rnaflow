@@ -42,11 +42,11 @@ class FastQC:
                 else:
                     raise me.CntError(f"fastq file number error: {meta['r2']}")
                 cmd1 = f"{self.fastqc} {self.config} \
-                         -o {self.output_dir} {R1} \
-                         2>&1 | tee {self.output_dir}{meta['r1']}.fastqc.log"
+                        -o {self.output_dir} {R1} \
+                        2>&1 | tee {self.output_dir}{meta['r1']}.fastqc.log"
                 cmd2 = f"{self.fastqc} {self.config} \
-                         -o {self.output_dir} {R2} \
-                         2>&1 | tee {self.output_dir}{meta['r2']}.fastqc.log"
+                        -o {self.output_dir} {R2} \
+                        2>&1 | tee {self.output_dir}{meta['r2']}.fastqc.log"
                 cmds.append(re.sub(" {2,}", " ", cmd1))
                 cmds.append(re.sub(" {2,}", " ", cmd2))
             elif meta["layout"] == "SINGLE":

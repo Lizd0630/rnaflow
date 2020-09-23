@@ -37,12 +37,20 @@ class Align:
                 if len(R1) == 1:
                     R1 = R1[0]
                 else:
-                    raise me.CntError(f"fastq file number error: {meta['r1']}")
+                    raise me.CntError(f"Fastq file number error: {meta['r1']}")
+                    # try:
+                    #     raise me.CntError(f"fastq file number error: {meta['r1']}")
+                    # except me.CntError as ce:
+                    #     print(ce.message)
                 R2 = list(filter(lambda x: pattern2.match(x) is not None, allfiles))
                 if len(R2) == 1:
                     R2 = R2[0]
                 else:
-                    raise me.CntError(f"fastq file number error: {meta['r2']}")
+                    raise me.CntError(f"Fastq file number error: {meta['r1']}")
+                    # try:
+                    #     raise me.CntError(f"fastq file number error: {meta['r2']}")
+                    # except me.CntError as ce:
+                    #     print(ce.message)
                 if self.software == "STAR":
                     cmd = f"{self.soft_path['STAR']} \
                             --genomeDir {self.ref} {self.config} \
@@ -61,7 +69,11 @@ class Align:
                 if len(R1) == 1:
                     R1 = R1[0]
                 else:
-                    raise me.CntError(f"fastq file number error: {meta['r1']}")
+                    raise me.CntError(f"Fastq file number error: {meta['r1']}")
+                    # try:
+                    #     raise me.CntError(f"fastq file number error: {meta['r1']}")
+                    # except me.CntError as ce:
+                    #     print(ce.message)
                 if self.software == "STAR":
                     cmd = f"{self.soft_path['STAR']} \
                             --genomeDir {self.ref} {self.config} \

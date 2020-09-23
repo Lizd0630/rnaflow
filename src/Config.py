@@ -13,15 +13,15 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 READ1 = r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[1]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz"
 READ2 = r"[^0-9a-zA-Z]([rR]|[Rr]ead)?[2]?[._]?(cln|clean)?[._]?(fq|fastq|fa).gz"
 
-RSEM_STRAND = {"fr-unstranded": "none",
-               "fr-firststrand": "reverse",
-               "fr-secondstrand": "forward"}
-PICARD_STRAND = {"fr-unstranded": "NONE",
-                 "fr-firststrand": "FIRST_READ_TRANSCRIPTION_STRAND",
-                 "fr-secondstrand": "SECOND_READ_TRANSCRIPTION_STRAND"}
-RESULTS_SUFFIX = {"infer_expr": "inferExpr.log",
-                  "CollectRnaSeqMetrics": "RNAmetrics.txt",
-                  "geneBody_coverage": "geneBodyCoverage.txt"}
+RSEM_STRAND = { "fr-unstranded": "none",
+                "fr-firststrand": "reverse",
+                "fr-secondstrand": "forward"}
+PICARD_STRAND = {   "fr-unstranded": "NONE",
+                    "fr-firststrand": "FIRST_READ_TRANSCRIPTION_STRAND",
+                    "fr-secondstrand": "SECOND_READ_TRANSCRIPTION_STRAND"}
+RESULTS_SUFFIX = {  "infer_expr": "inferExpr.log",
+                    "CollectRnaSeqMetrics": "RNAmetrics.txt",
+                    "geneBody_coverage": "geneBodyCoverage.txt"}
 
 # softwares path
 SOFTWARES = pl.Path(__dir__, "config/softwares.json")

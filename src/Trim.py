@@ -36,12 +36,12 @@ class Trim:
                 if len(R1) == 1:
                     R1 = R1[0]
                 else:
-                    raise me.CntError(f"fastq file number error: {meta['r1']}")
+                    raise me.CntError(f"Fastq file number error: {meta['r1']}")
                 R2 = list(filter(lambda x: pattern2.match(x) is not None, allfiles))
                 if len(R2) == 1:
                     R2 = R2[0]
                 else:
-                    raise me.CntError(f"fastq file number error: {meta['r2']}")
+                    raise me.CntError(f"Fastq file number error: {meta['r2']}")
                 if self.software == "fastp":
                     out1 = f"{meta['r1']}_R1.cln.fq.gz"
                     out2 = f"{meta['r2']}_R2.cln.fq.gz"
@@ -84,7 +84,7 @@ class Trim:
                 if len(R1) == 1:
                     R1 = R1[0]
                 else:
-                    raise me.CntError(f"fastq file number error: {meta['r1']}")
+                    raise me.CntError(f"Fastq file number error: {meta['r1']}")
                 if self.software == "fastp":
                     out1 = f"{meta['r1']}_cln.fq.gz"
                     failed = f"{meta['r1']}_failed.fq.gz"
