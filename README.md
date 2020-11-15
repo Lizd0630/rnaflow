@@ -40,13 +40,26 @@ rnaflow cover basic steps of RNAseq analyses, but differential analysis do not i
 - Layout: SINGLE/PAIRED
 - Strand_specificity: fr-unstranded/fr-firststrand/fr-secondstrand
 
+| Run   | R1    | R2    | Layout | Strand_specificity | Group | Batch |
+| ----- | ----- | ----- | ------ | ------------------ | ----- | ----- |
+| smpl1 | smpl1 | smpl1 | PAIRED | fr-firststrand     | A     | 1     |
+| smpl2 | smpl2 | smpl2 | PAIRED | fr-firststrand     | A     | 1     |
+| smpl3 | smpl3 | smpl3 | PAIRED | fr-firststrand     | A     | 1     |
+| smpl4 | smpl4 | smpl4 | PAIRED | fr-firststrand     | B     | 1     |
+| smpl5 | smpl5 | smpl5 | PAIRED | fr-firststrand     | B     | 1     |
+| smpl6 | smpl6 | smpl6 | PAIRED | fr-firststrand     | B     | 1     |
+| smpl7 | smpl7 |       | SINGLE | fr-unstranded      | C     | 2     |
+| smpl8 | smpl8 |       | SINGLE | fr-unstranded      | C     | 2     |
+| smpl9 | smpl9 |       | SINGLE | fr-unstranded      | C     | 2     |
+
+
 ## Notes
 ### Software parameter JSON file
 #### Input, output, strandness, reference, log file, prefix, suffix, etc, should not in JSON files.
-#### Exact performed commands will be recorded in output directory.
+#### Exactly performed commands will be recorded in output directory.
 #### For details,
 0. All input/output files will be parsed from meta file, you just only offer --project_name as prefix or not.
-1. Trimmomatic: adapter will be parsed via softpath(Do not support Illumina GA series; Modified Trim Class if you have to)
+1. Trimmomatic: adapter will be parsed via softpath(Do not support Illumina GA series; Modified Trim Class will be needed if you have to)
 2. STAR align: --genomeDir be specified via command --ref
 3. RSEM quantification: --strandness, --paired-end will be parsed from meta info, RSEM index be specified via command --ref
 4. GenomicAlignments count:
@@ -64,7 +77,6 @@ flag <- scanBamFlag(isSecondaryAlignment = FALSE,
                     isNotPassingQualityControls = FALSE,
                     isUnmappedQuery = FALSE)
 sbp <- ScanBamParam(flag=flag, mapqFilter = 255)
-ep <- 
 ```
 ##### for single end, unstranded library
 ```r
