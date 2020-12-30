@@ -164,6 +164,15 @@ def fastqc(
     help="Software to use.",
 )
 @click.option(
+    "-a",
+    "--trimmomatic_adapter",
+    required=True,
+    default="TruSeq3",
+    show_default=True,
+    type=click.Choice(["TruSeq2", "TruSeq3"]),
+    help="Trimmomatic adapter generation, TruSeq2 for Illumina Genome Analyzer IIx, TruSeq3 for HiSeq and MiSeq.",
+)
+@click.option(
     "--softwares",
     default=Config.SOFTWARES,
     show_default=True,
@@ -195,6 +204,7 @@ def trim(
         meta_file,
         n_jobs,
         tool,
+        trimmomatic_adapter,
         softwares,
         project_name,
         config,
@@ -218,6 +228,7 @@ def trim(
         output_dir=output_dir,
         tool=tool,
         softwares=softwares,
+        adapter=trimmomatic_adapter,
         config=config)
     cmds_trim = cmds_trim.make_cmds()
     cmds_multiqc = MultiQC(

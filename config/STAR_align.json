@@ -14,5 +14,6 @@
     "--chimJunctionOverhangMin": "12",
     "--outReadsUnmapped": "Fastx",
     "--outFilterMultimapNmax": "20",
-    "--chimOutType": "Junctions SeparateSAMold"
+    "--chimOutType": "Junctions SeparateSAMold",
+    "--alignEndsType": "EndToEnd"
 }

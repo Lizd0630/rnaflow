@@ -15,7 +15,7 @@ import src.MyError as me
 
 
 class Trim:
-    def __init__(self, meta_file, input_dir, output_dir, tool, softwares, config):
+    def __init__(self, meta_file, input_dir, output_dir, tool, softwares, adapter, config):
         # ["Run", "R1", "R2", "Layout", "Strand_specificity"]
         # {"run": run[i], "r1": r1[i], "r2": r2[i], "layout": layout[i], "strand": strand[i]}
         self.meta_info = Meta(meta_file).get_info()
@@ -23,6 +23,7 @@ class Trim:
         self.output_dir = str(pl.Path(output_dir).resolve()) + r"/"
         self.software = tool
         self.soft_path = ParseDict(softwares).dict
+        self.adapter = adapter
         self.config = ParseDict(config).make_config()
 
     def make_cmds(self):
@@ -73,7 +74,7 @@ class Trim:
                             {R1} {R2} \
                             {self.output_dir}{out1} {self.output_dir}{up1} \
                             {self.output_dir}{out2} {self.output_dir}{up2} \
-                            ILLUMINACLIP:{trimmomatic_dir}/adapters/TruSeq3-PE.fa:2:30:10 \
+                            ILLUMINACLIP:{trimmomatic_dir}/adapters/{self.adapter}-PE.fa:2:30:10 \
                             {self.config} \
                             2>&1 | tee {self.output_dir}{meta['run']}.trimmomatic.log"
                     cmd = re.sub(" {2,}", " ", cmd)
@@ -106,7 +107,7 @@ class Trim:
                     cmd = f"java -jar {trimmomatic} SE \
                             {R1} \
                             {self.output_dir}{out1} \
-                            ILLUMINACLIP:{trimmomatic_dir}/adapters/TruSeq3-SE.fa:2:30:10 \
+                            ILLUMINACLIP:{trimmomatic_dir}/adapters/{self.adapter}-SE.fa:2:30:10 \
                             {self.config} \
                             2>&1 | tee {self.output_dir}{meta['r1']}.trimmomatic.log"
                     cmd = re.sub(" {2,}", " ", cmd)
